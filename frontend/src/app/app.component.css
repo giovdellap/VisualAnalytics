@@ -37,6 +37,15 @@
 
 .card-row {
   display: flex;
+}
+
+.button-section {
+  width: 50px;
+}
+
+.card-section {
+  width: 100%;
+  display: flex;
   justify-content: space-evenly;
   align-items: start;
   padding: 20px 0px;

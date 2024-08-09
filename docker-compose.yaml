@@ -1,7 +1,7 @@
 services:
 
   backend:
-    container_name: backend
+    container_name: backend-visanal
     restart: always
     ports:
       - 5001:5001
@@ -30,6 +30,16 @@ services:
     restart: unless-stopped
     networks:
       - main
+
+  frontend:
+    container_name: frontend-visanal
+    restart: always
+    ports:
+      - 4200:4200
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+
 
 volumes:
   influxdb-visanal-data:

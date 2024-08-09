@@ -63,6 +63,7 @@ export class AppComponent implements OnInit {
 
   closeSubRow() {
     this.subrowEmitter.next(false)
+    this.subrowGenEmitter.next(false)
   }
 
   onClickPath(path: string) {
