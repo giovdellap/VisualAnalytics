@@ -57,7 +57,7 @@ export class ScatterplotComponent implements OnInit{
   coloredEmitter = new BehaviorSubject<boolean>(this.colored)
   coloredObservable: Observable<boolean>
 
-  factory = new GraphFactory(1200, 800)
+  factory = new GraphFactory(1200, 700)
 
   insights = scatterplotinsightsXAxis
 

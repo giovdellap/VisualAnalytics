@@ -42,7 +42,7 @@ export class LoadingtimePageComponent implements OnInit{
   titleObservable: Observable<boolean>
 
   normalFactory = new GraphFactory(1000, 600)
-  pcaFactory = new GraphFactory(1000, 350)
+  pcaFactory = new GraphFactory(1000, 250)
 
   constructor(private apiService: ApiService) {
     this.titleObservable = this.titleBehaviourSubject.asObservable()
@@ -98,7 +98,7 @@ export class LoadingtimePageComponent implements OnInit{
   getPCAObservable(): Observable<any> {
     return this.apiService.getPCARequestQuery(this.optionControl.value).pipe(
       tap(
-        res => this.getCountGraph(res, this.pcaFactory, this.getPCAOption(this.optionControl.value), [-3, 3])
+        res => this.getCountGraph(res, this.pcaFactory, this.getPCAOption(this.optionControl.value), [-1, 1])
       )
     )
   }

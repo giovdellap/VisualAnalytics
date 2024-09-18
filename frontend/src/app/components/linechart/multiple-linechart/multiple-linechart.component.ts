@@ -18,7 +18,7 @@ export class MultipleLinechartComponent {
 
   models = models.slice(1)
   svgArray: any[] = [{}, {}, {}, {}]
-  factory = new PlotFactory(1000, 700)
+  factory = new PlotFactory(800, 400)
   xAxis: string
   yAxis: string
 

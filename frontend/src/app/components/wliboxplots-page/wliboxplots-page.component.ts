@@ -31,7 +31,7 @@ export class WliboxplotsPageComponent implements OnInit {
   models = models
   svg: any
 
-  factory = new PlotFactory(1200, 600)
+  factory = new PlotFactory(1300, 800)
 
   constructor(private apiService: ApiService) {}
 

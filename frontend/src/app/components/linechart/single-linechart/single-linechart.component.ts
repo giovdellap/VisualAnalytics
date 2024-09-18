@@ -14,7 +14,7 @@ import { NoSanitizePipe } from "../../../utils/nosanitizerpipe";
 export class SingleLinechartComponent {
 
   svg: any
-  factory = new PlotFactory(1200, 700)
+  factory = new PlotFactory(1500, 800)
   xAxis: string
   yAxis: string
 

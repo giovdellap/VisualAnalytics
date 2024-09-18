@@ -18,7 +18,7 @@ import { NoSanitizePipe } from '../../../utils/nosanitizerpipe';
 export class SingleWeekdayComponent {
 
   svg: any
-  factory = new PlotFactory(1200, 700)
+  factory = new PlotFactory(1700, 750)
 
   constructor(
     private apiService: ApiService,
