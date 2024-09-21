@@ -15,6 +15,8 @@ class DBHandler {
     async basicQuery(field1, field2, model) {}
 
     async basicRequestQuery(field) {}
+
+    async logQuery() {}
   }
   
   

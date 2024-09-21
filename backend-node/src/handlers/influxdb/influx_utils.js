@@ -51,7 +51,21 @@ function RequestToPoint(item) {
     return point
 }
 
+function responseToLogItems(response) {
+    let res = []
+    for (const dbObj of response) {
+        let obj = {}
+        obj[dbObj['_field']] = dbObj['_value']
+        obj['model'] = dbObj['model']
+        obj['wli'] = dbObj['wli']
+        obj['tokens'] = dbObj['tokens']
+        res.push(obj)
+    }
+    return res
+}
+
 module.exports = {
     LogItemToPoint,
-    RequestToPoint
+    RequestToPoint,
+    responseToLogItems
 }

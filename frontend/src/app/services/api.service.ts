@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
+import { LogItem, LogItemGenerations, LogItemSatisfaction } from '../model/queryresponses/analModel/logItem';
 import { BasicQueryNoCountResponseItem } from '../model/queryresponses/basicQueryNoCountResponse';
 import { BasicRequestQueryItem } from '../model/queryresponses/basicRequestQueryItem';
 import { SatisfactionQueryItem } from '../model/queryresponses/satisfactionQueryResponse';
@@ -105,6 +106,36 @@ export class ApiService {
       model_filter: model
     }
     return this.getLogObservable(this.http.post<BasicQueryNoCountResponseItem[]>(this.url + '/query/linechartQuery', body))
+  }
+
+  getSatisfactionLogQuery(): Observable<LogItemSatisfaction[]> {
+    let body = {
+      db: this.db,
+      field: 'satisfaction'
+    }
+    return this.getLogObservable(
+      this.http.post<LogItemSatisfaction[]>(this.url + "/query/logQuery", body)
+    )
+  }
+
+  getGenerationsLogQuery(): Observable<LogItemGenerations[]> {
+    let body = {
+      db: this.db,
+      field: 'generations'
+    }
+    return this.getLogObservable(
+      this.http.post<LogItemGenerations[]>(this.url + "/query/logQuery", body)
+    )
+  }
+
+  getGenericLogQuery(field: string): Observable<LogItem[]> {
+    let body = {
+      db: this.db,
+      field: field
+    }
+    return this.getLogObservable(
+      this.http.post<LogItemGenerations[]>(this.url + "/query/logQuery", body)
+    )
   }
 
   //INSERTION

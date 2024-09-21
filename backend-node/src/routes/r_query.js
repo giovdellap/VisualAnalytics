@@ -10,6 +10,8 @@ queryRouter.post('/basicRequestQueryNoCount', queryController.basicRequestNoCoun
 queryRouter.post('/test', queryController.test)
 queryRouter.post('/linechartquery', queryController.linechartQuery)
 queryRouter.post('/pcaquery', queryController.pcaRequestQuery)
+queryRouter.post('/logquery', queryController.logQuery)
+
 
 
 module.exports = queryRouter;

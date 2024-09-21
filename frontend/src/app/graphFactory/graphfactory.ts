@@ -4,7 +4,7 @@ import { createAxis, getScatterplotLegendPosition } from './graphUtils';
 
 export class GraphFactory {
   private svg: any;
-  private margin = 60;
+  private margin = 40;
   private width
   private height
 

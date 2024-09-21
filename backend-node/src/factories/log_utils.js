@@ -75,10 +75,10 @@ function getRelevation(classification, tokens, temperature, model) {
 
     satisfaction = satisfaction - (wli_factor + tokens_factor)
     if ((wli_factor + tokens_factor) > 0.7) {
-        satisfaction = satisfaction - (wli_factor + tokens_factor)
+        satisfaction = satisfaction - ((wli_factor + tokens_factor))
     }
     if (temperature > 0.4) {
-        satisfaction = satisfaction - temperature
+        satisfaction = satisfaction - (temperature / 2)
     }
 
     let generations = randomFloat(0.8, 3.5) + (tokens / 5000) + (wli * 0.4)
@@ -88,9 +88,13 @@ function getRelevation(classification, tokens, temperature, model) {
     satisfaction = satisfaction + getSatifactionModifier(model.name)
     generations = generations + getGenerationsModifier(model.name)
 
+    if(satisfaction < 0) {
+        satisfaction = 0.1
+    }
+
     return new Relevation (
         Math.round(generations),
-        Math.round(satisfaction),
+        Math.ceil(satisfaction),
         wli, tokens
     )
 }

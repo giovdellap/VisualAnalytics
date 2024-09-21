@@ -1,6 +1,7 @@
 const { countItems, roundFloats, roundToInt, groupBy, calculateMean } = require("./utils/queryUtils")
 const { getHandler } = require("./controller_utils")
 const PCA = require ("pca-js")
+const { responseToLogItems } = require("../handlers/influxdb/influx_utils")
 
 const basicQuery = ( async (req, res) => {
 
@@ -157,26 +158,23 @@ const pcaRequestQuery = ( async (req, res) => {
 })
 
 const test = ( async (req, res) => {
-
-  const test = ( async (req, res) => {
-
-    let dbHandler = getHandler(req.body.db)
-  
-    let dbResponse = await dbHandler.test()
-    console.log("dbResponse: ", dbResponse)
-    //console.log("RESPONSE LENGTH: ", dbResponse.length)
-    //let arr = roundFloats(dbResponse, [field1, field2])
-    res.json(dbResponse)
-  
-  })
-
   let dbHandler = getHandler(req.body.db)
-
   let dbResponse = await dbHandler.test()
   console.log("dbResponse: ", dbResponse)
   //console.log("RESPONSE LENGTH: ", dbResponse.length)
   //let arr = roundFloats(dbResponse, [field1, field2])
   res.json(dbResponse)
+})
+
+const logQuery = ( async (req, res) => {
+
+  let dbHandler = getHandler(req.body.db)
+  const field = req.body.field
+  let dbResponse = await dbHandler.logQuery(field)
+  response = responseToLogItems(dbResponse)
+  //console.log("RESPONSE LENGTH: ", dbResponse.length)
+  //let arr = roundFloats(dbResponse, [field1, field2])
+  res.json(response)
 
 })
 
@@ -189,6 +187,7 @@ module.exports = {
   basicRequestNoCountQuery,
   pcaRequestQuery,
   test,
-  linechartQuery
+  linechartQuery,
+  logQuery
 }
   

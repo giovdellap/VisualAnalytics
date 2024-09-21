@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { GensatComponent } from './components/gensat/gensat.component';
 import { LinechartContainerComponent } from './components/linechart-container/linechart-container.component';
 import { LoadingtimePageComponent } from './components/loadingtime-page/loadingtime-page.component';
 import { ScatterplotComponent } from './components/scatterplot/scatterplot.component';
@@ -18,5 +19,8 @@ export const routes: Routes = [
   {path: "weekday/scatterplots", component: MultipleWeekdayComponent},
   {path: "weekday/linechart", component: SingleWeekdayComponent},
   {path: "setup", component: SetupPageComponent},
+  {path: "generations", component: GensatComponent},
+  {path: "satisfaction", component: GensatComponent}
+
 
 ];

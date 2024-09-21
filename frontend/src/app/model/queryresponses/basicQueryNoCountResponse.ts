@@ -5,3 +5,5 @@ export class BasicQueryNoCountResponseItem {
   tokens: number = 0
   model: string = ""
 }
+
+

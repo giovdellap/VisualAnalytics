@@ -107,7 +107,6 @@ class InfluxDBHandler extends DBHandler{
       //const o = await tableMeta.toObject(values)
       //console.log(o)
       //result.push(o)
-      
       // console.log(JSON.stringify(o, null, 2)
       
       let obj = {}
@@ -123,6 +122,21 @@ class InfluxDBHandler extends DBHandler{
       result.push(obj)
     }
     //console.log(result[0])
+    //console.log('fuori dal for', result.length)
+    return result
+  }
+
+  async queryRowsObjects(query) {
+    let result = []
+    const queryApi = this.client.getQueryApi(this.org)
+    for await (const {values, tableMeta} of queryApi.iterateRows(query)) {
+      // the following line creates an object for each row
+      const o = await tableMeta.toObject(values)
+      //console.log(o)
+      result.push(o)
+      // console.log(JSON.stringify(o, null, 2)
+    }
+    console.log(result[0])
     //console.log('fuori dal for', result.length)
     return result
   }
@@ -153,6 +167,15 @@ class InfluxDBHandler extends DBHandler{
       //result.push(o)
     }
     console.log('fuori dal for', result.length)
+    return result
+  }
+
+  async logQuery(field) {
+
+    const queryFactory = new InfluxQueryFactory(this.bucket)
+    const fluxQuery = queryFactory.getLogQuery(field)
+    console.log('QUERY: ', fluxQuery)
+    let result = await this.queryRowsObjects(fluxQuery)
     return result
   }
 }
