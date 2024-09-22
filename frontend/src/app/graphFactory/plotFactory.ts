@@ -1,5 +1,6 @@
 import * as Plot from "@observablehq/plot";
 import { getLineChartSettings, getWLIBoxPlotSettings } from "../model/plotSettings/plotSettings";
+import { LogItem } from "../model/queryresponses/analModel/logItem";
 import { BasicQueryNoCountResponseItem } from "../model/queryresponses/basicQueryNoCountResponse";
 import { getMinMaxDates, WeekdayLogItem } from "../utils/weekDayUtils";
 
@@ -13,7 +14,7 @@ export class PlotFactory {
     this.height = height - (this.margin * 2)
   }
 
-  getWLIBoxplot(data: BasicQueryNoCountResponseItem[], yAxis: string) {
+  getWLIBoxplot(data: LogItem[], yAxis: string) {
     const settings = getWLIBoxPlotSettings(yAxis)
     let yOptions: Plot.ScaleOptions = {
       grid: true,
@@ -43,18 +44,21 @@ export class PlotFactory {
     })
   }
 
-  getTokensBoxplot(data: BasicQueryNoCountResponseItem[], xAxis: string) {
+  getTokensBoxplot(data: LogItem[], xAxis: string) {
     const settings = getWLIBoxPlotSettings(xAxis)
-    console.log(settings)
-    let yOptions: Plot.ScaleOptions = {
+    let xOptions: Plot.ScaleOptions = {
       label: 'tokens',
-      //domain: [0, 10000],
+      interval: 500,
+      domain: [0, 10000],
+      labelAnchor: "right",
+      tickFormat: (x) => x.toFixed(1),
       //tickFormat: (x) => 1,
     }
-    let fxOptions: Plot.ScaleOptions = {
+    let fyOptions: Plot.ScaleOptions = {
+      label: getWLIBoxPlotSettings(xAxis).yLabel,
       interval: 1,
-      label: settings.yLabel,
-      labelAnchor: "right",
+      domain: [5, 4, 3, 2, 1],
+      //tickFormat: (x) => x.toFixed(1),
       //tickFormat: (x) => 1,
 
     }
@@ -63,11 +67,11 @@ export class PlotFactory {
       height: this.height,
       marginLeft: this.margin,
       marginBottom: this.margin,
-      fx: fxOptions,
-      y: yOptions,
+      x: xOptions,
+      fy: fyOptions,
       marks: [
         //ruleY([0]),
-        Plot.boxY(data, {fx: settings.valueAPI, y: 'tokens'}),
+        Plot.boxX(data, {x: 'tokens', fy: settings.valueAPI}),
         Plot.frame()
       ]
     })

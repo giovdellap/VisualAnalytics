@@ -1,53 +1,176 @@
 <div class="container">
-    <div class="main-row">
-        <div class="scatterplots-container">
-            <div class="graph-container">
-                <div class="title-container">ALL MODELS</div>
-                <figure id="tokens0"></figure>
-            </div>
-            <div class="graph-container">
-                <div class="title-container">{{models[1]}}</div>
-                <figure id="tokens1"></figure>
-            </div>
-            <div class="graph-container">
-                <div class="title-container">{{models[2]}}</div>
-                <figure id="tokens2"></figure>
-            </div>
-            <div class="graph-container">
-                <div class="title-container">{{models[3]}}</div>
-                <figure id="tokens3"></figure>
-            </div>
-            <div class="graph-container">
-                <div class="title-container">{{models[4]}}</div>
-                <figure id="tokens4"></figure>
-            </div>
-        </div>
-        <div class="boxplot-container"></div>
+    <div class="title-row">
+        <div class="title-container" (click)="onClickModelName(0)">{{models[0]}}</div>
+        <div class="title-container" (click)="onClickModelName(1)">{{models[1]}}</div>
+        <div class="title-container" (click)="onClickModelName(2)">{{models[2]}}</div>
+        <div class="title-container" (click)="onClickModelName(3)">{{models[3]}}</div>
+        <div class="title-container" (click)="onClickModelName(4)">{{models[4]}}</div>
     </div>
     <div class="main-row">
         <div class="scatterplots-container">
-            <div class="graph-container">
-                <div class="title-container">ALL MODELS</div>
-                <figure id="wli0"></figure>
+            <div  
+            [ngClass]="((obsArray[0] | async) === models[0]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(0, 0)"
+            >
+                <figure id="spr0c0"></figure>
             </div>
-            <div class="graph-container">
-                <div class="title-container">{{models[1]}}</div>
-                <figure id="wli1"></figure>
+            <div 
+            [ngClass]="((obsArray[0] | async) === models[1]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(0, 1)"
+            >
+                <figure id="spr0c1"></figure>
             </div>
-            <div class="graph-container">
-                <div class="title-container">{{models[2]}}</div>
-                <figure id="wli2"></figure>
+            <div [ngClass]="((obsArray[0] | async) === models[2]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(0, 2)"
+            >
+                <figure id="spr0c2"></figure>
             </div>
-            <div class="graph-container">
-                <div class="title-container">{{models[3]}}</div>
-                <figure id="wli3"></figure>
+            <div [ngClass]="((obsArray[0] | async) === models[3]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(0, 3)"
+            >
+                <figure id="spr0c3"></figure>
             </div>
-            <div class="graph-container">
-                <div class="title-container">{{models[4]}}</div>
-                <figure id="wli4"></figure>
+            <div [ngClass]="((obsArray[0] | async) === models[4]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(0, 4)"
+            >
+                <figure id="spr0c4"></figure>
             </div>
-            
         </div>
-        <div class="boxplot-container"></div>
+        <div class="right-container">
+            <div class="boxplot-container">
+                <div class="title-boxplot">{{obsArray[0] | async}}</div>
+                <figure id="bpr0"></figure>
+            </div>
+            <button mat-fab 
+            [disabled]="!(selectionModeObsArray[0] | async)" 
+            aria-label="Disable SELECTION MODE" 
+            (click)="disableSelectionMode(0)">
+                <mat-icon>delete</mat-icon>
+              </button>        
+        </div>
+
+    </div>
+    <div class="main-row">
+        <div class="scatterplots-container">
+            <div [ngClass]="((obsArray[1] | async) === models[0]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(1, 0)"
+            >
+                <figure id="spr1c0"></figure>
+            </div>
+            <div [ngClass]="((obsArray[1] | async) === models[1]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(1, 1)"
+            >
+                <figure id="spr1c1"></figure>
+            </div>
+            <div [ngClass]="((obsArray[1] | async) === models[2]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(1, 2)"
+            >
+                <figure id="spr1c2"></figure>
+            </div>
+            <div [ngClass]="((obsArray[1] | async) === models[3]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(1, 3)"
+            >
+                <figure id="spr1c3"></figure>
+            </div>
+            <div [ngClass]="((obsArray[1] | async) === models[4]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(1, 4)"
+            >
+                <figure id="spr1c4"></figure>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="boxplot-container">
+                <div class="title-boxplot">{{obsArray[1] | async}}</div>
+                <figure id="bpr1"></figure>
+            </div>
+            <button mat-fab 
+            [disabled]="!(selectionModeObsArray[1] | async)" 
+            aria-label="Disable SELECTION MODE" 
+            (click)="disableSelectionMode(1)">
+                <mat-icon>delete</mat-icon>
+              </button>        
+        </div>
+    </div>
+    <div class="main-row">
+        <div class="scatterplots-container">
+            <div [ngClass]="((obsArray[2] | async) === models[0]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(2, 0)"
+            >
+                <figure id="spr2c0"></figure>
+            </div>
+            <div [ngClass]="((obsArray[2] | async) === models[1]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(2, 1)"
+            >
+                <figure id="spr2c1"></figure>
+            </div>
+            <div [ngClass]="((obsArray[2] | async) === models[2]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(2, 2)"
+            >
+                <figure id="spr2c2"></figure>
+            </div>
+            <div [ngClass]="((obsArray[2] | async) === models[3]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(2, 3)"
+            >
+                <figure id="spr2c3"></figure>
+            </div>
+            <div [ngClass]="((obsArray[2] | async) === models[4]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(2, 4)"
+            >
+                <figure id="spr2c4"></figure>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="boxplot-container">
+                <div class="title-boxplot">{{obsArray[2] | async}}</div>
+                <figure id="bpr2"></figure>
+            </div>
+            <button mat-fab 
+            [disabled]="!(selectionModeObsArray[2] | async)" 
+            aria-label="Disable SELECTION MODE" 
+            (click)="disableSelectionMode(2)">
+                <mat-icon>delete</mat-icon>
+              </button>        
+        </div>
+    </div> 
+    <div class="main-row">
+        <div class="scatterplots-container">
+            <div [ngClass]="((obsArray[3] | async) === models[0]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(3, 0)"
+            >
+                <figure id="spr3c0"></figure>
+            </div>
+            <div [ngClass]="((obsArray[3] | async) === models[1]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(3, 1)"
+            >
+                <figure id="spr3c1"></figure>
+            </div>
+            <div [ngClass]="((obsArray[3] | async) === models[2]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(3, 2)"
+            >
+                <figure id="spr3c2"></figure>
+            </div>
+            <div [ngClass]="((obsArray[3] | async) === models[3]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(3, 3)"
+            >
+                <figure id="spr3c3"></figure>
+            </div>
+            <div [ngClass]="((obsArray[3] | async) === models[4]) ? 'graph-container-selected' : 'graph-container'"
+            (click)="onClickGraphContainer(3, 4)"
+            >
+                <figure id="spr3c4"></figure>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="boxplot-container">
+                <div class="title-boxplot">{{obsArray[3] | async}}</div>
+                <figure id="bpr3"></figure>
+            </div>
+            <button mat-fab 
+            [disabled]="!(selectionModeObsArray[3] | async)" 
+            aria-label="Disable SELECTION MODE" 
+            (click)="disableSelectionMode(3)">
+                <mat-icon>delete</mat-icon>
+            </button>        
+        </div>
     </div> 
 </div>

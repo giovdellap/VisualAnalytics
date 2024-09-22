@@ -104,8 +104,8 @@ export class LoadingtimePageComponent implements OnInit{
   }
 
   getCountGraph(res: any[], factory: GraphFactory, option: XAxisLoadingTime, yAxisDomain: number[]) {
-    factory.addXAxis(option.type, option.domain)
-    factory.addYAxis('linear', yAxisDomain)
+    factory.addXAxis(option.type, option.domain, 0, "")
+    factory.addYAxis('linear', yAxisDomain, 10, "s")
     factory.addRAxis([1, getMaxCount(res)], option.maxRay)
     factory.colorGrid()
     factory.addXAxisTitle(option.value)
@@ -115,8 +115,8 @@ export class LoadingtimePageComponent implements OnInit{
   }
 
   getSimpleGraph(res: any[], factory: GraphFactory, option: XAxisLoadingTime, yAxisDomain: number[]) {
-    factory.addXAxis(option.type, option.domain)
-    factory.addYAxis('linear', yAxisDomain)
+    factory.addXAxis(option.type, option.domain, 0, "")
+    factory.addYAxis('linear', yAxisDomain, 10, "s")
     factory.colorGrid()
     factory.addXAxisTitle(option.value)
     factory.addYAxisTitle('loading time')

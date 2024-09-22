@@ -2,6 +2,7 @@ const { countItems, roundFloats, roundToInt, groupBy, calculateMean } = require(
 const { getHandler } = require("./controller_utils")
 const PCA = require ("pca-js")
 const { responseToLogItems } = require("../handlers/influxdb/influx_utils")
+const { response } = require("express")
 
 const basicQuery = ( async (req, res) => {
 
@@ -169,10 +170,12 @@ const test = ( async (req, res) => {
 const logQuery = ( async (req, res) => {
 
   let dbHandler = getHandler(req.body.db)
-  const field = req.body.field
-  let dbResponse = await dbHandler.logQuery(field)
-  response = responseToLogItems(dbResponse)
-  //console.log("RESPONSE LENGTH: ", dbResponse.length)
+  //const field = req.body.field
+  let dbResponse = await dbHandler.logQuery()
+  //console.log(dbResponse)
+  let response = responseToLogItems(dbResponse)
+
+  console.log("RESPONSE LENGTH: ", response.length)
   //let arr = roundFloats(dbResponse, [field1, field2])
   res.json(response)
 

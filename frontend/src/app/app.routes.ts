@@ -19,8 +19,7 @@ export const routes: Routes = [
   {path: "weekday/scatterplots", component: MultipleWeekdayComponent},
   {path: "weekday/linechart", component: SingleWeekdayComponent},
   {path: "setup", component: SetupPageComponent},
-  {path: "generations", component: GensatComponent},
-  {path: "satisfaction", component: GensatComponent}
+  {path: "gensat", component: GensatComponent},
 
 
 ];

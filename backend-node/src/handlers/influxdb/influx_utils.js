@@ -52,14 +52,23 @@ function RequestToPoint(item) {
 }
 
 function responseToLogItems(response) {
+    let temp = []
     let res = []
     for (const dbObj of response) {
         let obj = {}
         obj[dbObj['_field']] = dbObj['_value']
+        obj['_time'] = dbObj['_time']
         obj['model'] = dbObj['model']
         obj['wli'] = dbObj['wli']
         obj['tokens'] = dbObj['tokens']
-        res.push(obj)
+        obj.selected = false
+        temp.push(obj)
+    }
+    while(temp.length > 0) {
+        let e1 = temp.shift()
+        let e2 = temp.shift()
+        e1['satisfaction'] = e2.satisfaction
+        res.push(e1)
     }
     return res
 }

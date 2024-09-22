@@ -3,6 +3,7 @@ export class LogItem {
     tokens: number = 0
     model: string = ""
     count: number = 0
+    selected: boolean = false
 }
 
 export class LogItemGenerations extends LogItem {

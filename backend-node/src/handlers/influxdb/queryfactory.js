@@ -46,10 +46,10 @@ class InfluxQueryFactory {
         return bucket_query + range_query + filter_query
     }
 
-    getLogQuery(field) {
+    getLogQuery() {
         let filters = [
             this.getFilterQuery('_measurement', 'logItem'),
-            this.getFilterQuery('_field', field),
+            //this.getFilterQuery('_field', field),
         ]
         return this.getQuery(filters)
     }

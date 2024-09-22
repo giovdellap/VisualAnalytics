@@ -14,24 +14,64 @@
     align-items: center;
 }
 
+.title-row {
+    margin-left: 10px;
+    width: 80%;
+    display: flex;
+    justify-content: space-evenly;
+    cursor: pointer;
+}
+
+.right-container {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
 .scatterplots-container {
     width: 80%;
     display: flex;
     align-items: center;
+    justify-content: space-evenly;
+
 }
 
 .graph-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-radius: 20px;
+}
+
+.graph-container:hover {
+    background-color: #e8e9eb;
+    cursor: pointer;
+}
+
+.graph-container-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ed9039;
+    border-radius: 20px;
 }
 
 .title-container {
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: bold;
 }
 
+.title-boxplot {
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+}
+
 figure {
-    margin-inline-start: 20px;
-    margin-inline-end: 10px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
 }

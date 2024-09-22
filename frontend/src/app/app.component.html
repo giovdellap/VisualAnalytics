@@ -1,23 +1,10 @@
 <div class="container">
   <div class="button-row">
-    <div class="main-buttons">
-      <button mat-raised-button (click)="clickButtonRow(true)">GENERATIONS/SATISFACTION</button>
-      <button mat-raised-button (click)="clickButtonRow(false)">LOADING TIME</button>
-      <button mat-raised-button (click)="onClickPath('/generations')">GENERATIONS NEW</button>
-      <button mat-raised-button (click)="onClickPath('/satisfaction')">SATISFACTION NEW</button>
-      <button mat-raised-button (click)="onClickPath('/scatterplot')">LOADING TIME NEW</button>
-    </div>
-    <div class="admin-buttons">
-      <button mat-raised-button routerLink = "/setup">SETUP</button>
-      <mat-form-field class="formField">
-        <mat-label></mat-label>
-        <mat-select [formControl]="dbControl" [(value)]="db">
-          @for (option of options; track option) {
-            <mat-option [value]="option">{{option}}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <button mat-raised-button (click)="clickButtonRow(true)">GENERATIONS/SATISFACTION</button>
+    <button mat-raised-button (click)="clickButtonRow(false)">LOADING TIME</button>
+    <button mat-raised-button (click)="onClickPath('/gensat')">GENERATIONS NEW</button>
+    <button mat-raised-button (click)="onClickPath('/scatterplot')">LOADING TIME NEW</button>
+    <button mat-raised-button routerLink = "/setup">SETUP</button>
   </div>
   <div class="card-row" *ngIf="(subrowObservable | async) && (subrowGenObservable | async)">
     <div class="card-section">

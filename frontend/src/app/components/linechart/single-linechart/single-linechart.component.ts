@@ -43,7 +43,7 @@ export class SingleLinechartComponent {
       //console.log('GET GRAPH 1')
       console.log('SINGLE LINECHART X AXIS: ', this.xAxis)
       console.log(res)
-      this.svg = this.factory.getTokensBoxplot(res, this.xAxis).outerHTML
+      //this.svg = this.factory.getTokensBoxplot(res, this.xAxis).outerHTML
       //console.log('GET GRAPH 2')
     })
   }

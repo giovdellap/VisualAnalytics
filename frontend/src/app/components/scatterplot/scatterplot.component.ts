@@ -117,8 +117,8 @@ export class ScatterplotComponent implements OnInit{
         }
       }
       //this.factory.createSvg('scatter')
-      this.factory.addXAxis(this.xAxis.type, this.xAxis.domain)
-      this.factory.addYAxis(this.yAxis.type, this.yAxis.domain)
+      this.factory.addXAxis(this.xAxis.type, this.xAxis.domain, this.xAxis.ticks, this.xAxis.format)
+      this.factory.addYAxis(this.yAxis.type, this.yAxis.domain, this.yAxis.ticks, "s")
       this.factory.addRAxis([1, getMaxCount(arr)], this.xAxis.maxRay)
       this.factory.colorGrid()
       this.factory.addXAxisTitle(this.xAxis.value)
@@ -152,8 +152,8 @@ export class ScatterplotComponent implements OnInit{
       }
       console.log(result)
       this.factory.addColoredBackground()
-      this.factory.addXAxis(this.xAxis.type, this.xAxis.domain)
-      this.factory.addYAxis(this.yAxis.type, this.yAxis.domain)
+      this.factory.addXAxis(this.xAxis.type, this.xAxis.domain, this.xAxis.ticks, this.xAxis.format)
+      this.factory.addYAxis(this.yAxis.type, this.yAxis.domain, this.yAxis.ticks, "s")
       this.factory.colorGrid()
       this.factory.addXAxisTitle(this.xAxis.value)
       this.factory.addYAxisTitle(this.yAxis.value)

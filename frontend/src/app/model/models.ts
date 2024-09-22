@@ -1,5 +1,5 @@
 export const models = [
-  "all",
+  "All Models",
   "ChartGenerator",
   "ChartAnalyzer",
   "GraphPredictor",

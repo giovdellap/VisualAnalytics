@@ -88,8 +88,11 @@ function getRelevation(classification, tokens, temperature, model) {
     satisfaction = satisfaction + getSatifactionModifier(model.name)
     generations = generations + getGenerationsModifier(model.name)
 
-    if(satisfaction < 0) {
+    if(satisfaction <= 0) {
         satisfaction = 0.1
+    }
+    if (satisfaction >5) {
+        satisfaction = 5
     }
 
     return new Relevation (

@@ -170,10 +170,10 @@ class InfluxDBHandler extends DBHandler{
     return result
   }
 
-  async logQuery(field) {
+  async logQuery() {
 
     const queryFactory = new InfluxQueryFactory(this.bucket)
-    const fluxQuery = queryFactory.getLogQuery(field)
+    const fluxQuery = queryFactory.getLogQuery()
     console.log('QUERY: ', fluxQuery)
     let result = await this.queryRowsObjects(fluxQuery)
     return result

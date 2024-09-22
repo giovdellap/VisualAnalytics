@@ -1,98 +1,283 @@
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { switchMap, tap } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { GraphFactory } from '../../graphFactory/graphfactory';
 import { getMaxCount } from '../../graphFactory/graphUtils';
+import { BoxPlotSettings, boxplotXAxis, boxplotYAxis } from '../../model/graphSettings/boxplotSettings';
 import { XAxisScatterplot, xScatterplotSettings } from '../../model/graphSettings/xAxisScatterplot';
-import { yScatterplotSettings } from '../../model/graphSettings/yAxisScatterplot';
+import { YAxisScatterplot, yScatterplotSettings } from '../../model/graphSettings/yAxisScatterplot';
 import { models } from '../../model/models';
 import { LogItem } from '../../model/queryresponses/analModel/logItem';
 import { ApiService } from '../../services/api.service';
+import { NoSanitizePipe } from '../../utils/nosanitizerpipe';
+
 
 @Component({
   selector: 'app-gensat',
   standalone: true,
-  imports: [],
+  imports: [
+    NoSanitizePipe,
+    AsyncPipe,
+    CommonModule,
+    MatIcon,
+    MatButtonModule
+  ],
   templateUrl: './gensat.component.html',
   styleUrl: './gensat.component.css'
 })
 export class GensatComponent {
   
-  mainVariable: string = ""
-
-  models: String[] = models
+  models: string[] = models
   itemsArray: LogItem[] = []
+  rowItems: LogItem[][] = []
+  bpItems: LogItem[][] = []
 
-  tokensFactories: GraphFactory[] = []
-  wliFactories: GraphFactory[] = []
+  spFactories: GraphFactory[][] = []
+  bpFactories: GraphFactory[] = []
 
-  tokenScatterplotSettings = xScatterplotSettings[0]
-  wliScatterplotSettings = xScatterplotSettings[1]
-  yAxisSettings = yScatterplotSettings[0]
+  tokensId: number = 0
+  wliId: number = 1
+  generationsId = 0
+  satisfactionId = 1
+
+  svgArray: any[] = []
+
+  selectionModeArray: boolean[] = [false, false, false, false]
+  selectionModeBsArray: BehaviorSubject<boolean>[] = []
+  selectionModeObsArray: Observable<boolean>[] = []
+
+  bsArray: BehaviorSubject<string>[] = []
+  obsArray: Observable<string>[] = []
+  currentModels: string[] = []
 
   constructor(
-    private route: ActivatedRoute,
     private api: ApiService
   ) {
   }
 
   ngOnInit() {
-    this.refreshItems().subscribe(x => {
-      console.log(x)
-      this.createScatterplots()
+
+    //initialize Behaviour Subject and Observable for 
+    for (let i = 0; i < 4; i++) {
+      this.bsArray.push(new BehaviorSubject<string>(this.models[0]))
+      this.obsArray.push(this.bsArray[i].asObservable())
+      this.currentModels.push(this.models[0])
+
+      this.selectionModeBsArray.push(new BehaviorSubject<boolean>(this.selectionModeArray[i]))
+      this.selectionModeObsArray.push(this.selectionModeBsArray[i].asObservable())
+    }
+
+    //create factories
+    for (let i = 0; i < 4; i++) {
+      this.bpFactories.push(new GraphFactory(500, 300))
+      this.spFactories.push([])
+      for (let j = 0; j < this.models.length; j++) {
+        this.spFactories[i].push(new GraphFactory(250, 250))
+      }
+    }
+
+    this.initializeSVGs()
+
+    this.api.getGenericLogQuery().subscribe((res: LogItem[]) => {
+      this.itemsArray = res
+      this.rowItems.push(this.itemsArray)
+      this.bpItems.push(this.itemsArray)
+      for (let r = 0; r < 4; r++) {
+        this.rowItems.push(this.itemsArray)
+        this.bpItems.push(this.itemsArray)
+        this.refreshScatterplotsRow(r)
+        this.refreshBoxPlot(r)
+      }
     })
   }
 
-  refreshItems() {
-    return this.route.url.pipe(
-      tap(url => {
-        this.mainVariable = url[0].path
-        if (this.mainVariable === 'satisfaction') {
-          this.yAxisSettings = yScatterplotSettings[1]
-        }
-      }),
-      switchMap(() => this.api.getGenericLogQuery(this.mainVariable)),
-      tap((res: LogItem[]) => this.itemsArray = res)
-    )
-  }
+  refreshScatterplotsRow(rowIndex: number) {
 
-  createScatterplots() {
+    let xAxis: XAxisScatterplot
+    let yAxis: YAxisScatterplot
+    if (rowIndex < 2) {
+      xAxis = xScatterplotSettings[this.tokensId]
+    } else xAxis = xScatterplotSettings[this.wliId]
+    if(rowIndex === 0 || rowIndex === 2) {
+      yAxis = yScatterplotSettings[this.satisfactionId]
+    } else yAxis = yScatterplotSettings[this.generationsId]
 
-    let allModelsCountedTokens: LogItem[] = this.countOccurrencies(this.itemsArray, 'tokens')
-    this.createSingleScatterplot(0, allModelsCountedTokens, this.tokenScatterplotSettings, this.tokensFactories)
-    let allModelsCountedWli: LogItem[] = this.countOccurrencies(this.itemsArray, 'wli')
-    this.createSingleScatterplot(0, allModelsCountedWli, this.wliScatterplotSettings, this.wliFactories)
-
-
-    for (let i = 1; i < models.length; i++) {
-      let tokensCountedArray = this.countOccurrencies(this.itemsArray.filter(obj => obj.model === models[i]), 'tokens')
-      this.createSingleScatterplot(i, tokensCountedArray, this.tokenScatterplotSettings, this.tokensFactories)
-      let wliCountedArray = this.countOccurrencies(this.itemsArray.filter(obj => obj.model === models[i]), 'wli')
-      this.createSingleScatterplot(i, wliCountedArray, this.wliScatterplotSettings, this.wliFactories) 
+    if (this.selectionModeArray[rowIndex] === false) {
+      let allModelsCounted: LogItem[] = this.countOccurrencies(this.rowItems[rowIndex], xAxis.value, yAxis.value)
+      let maxRay = getMaxCount(allModelsCounted)
+      this.createSingleScatterplot(rowIndex, 0, allModelsCounted, xAxis, yAxis, this.spFactories[rowIndex][0], maxRay, true)
+  
+      for (let i = 1; i < models.length; i++) {
+        let tokensCountedArray = this.countOccurrencies(this.rowItems[rowIndex].filter(obj => obj.model === models[i]), xAxis.value, yAxis.value)
+        this.createSingleScatterplot(rowIndex, i, tokensCountedArray, xAxis, yAxis, this.spFactories[rowIndex][i], maxRay, false)
+      }
+    } else {
+      this.createSingleScatterplotSelectionMode(rowIndex, 0, this.rowItems[rowIndex], xAxis, yAxis, this.spFactories[rowIndex][0])
+      for (let i = 1; i < models.length; i++) {
+        let items: LogItem[] = this.rowItems[rowIndex].filter(obj => obj.model === models[i])
+        console.log('PARTY', items)
+        this.createSingleScatterplotSelectionMode(rowIndex, i, items, xAxis, yAxis, this.spFactories[rowIndex][i])
+      }
     }
   }
 
-  createSingleScatterplot(index: number, data: LogItem[], settings: XAxisScatterplot, factories: GraphFactory[]) {
-    factories.push(new GraphFactory(250, 250))
-    let id = settings.value + index
-    factories[index].createSvg(id)
-    factories[index].addXAxis(settings.type, settings.domain)
-    factories[index].addYAxis(this.yAxisSettings.type, this.yAxisSettings.domain)
-    factories[index].addRAxis([1, getMaxCount(data)], settings.maxRay)
-    factories[index].colorGrid()
-    factories[index].addXAxisTitle(settings.value)
-    factories[index].addYAxisTitle(this.yAxisSettings.value)
-    factories[index].addVariableScatterplotDots(data, settings.value, this.yAxisSettings.value)
-    factories[index].addScatterplotDimensionLegend()
+  refreshBoxPlot(rowIndex: number) {
+    let ySettings: BoxPlotSettings
+    let xSettings: BoxPlotSettings
+    if(rowIndex === 0 || rowIndex === 2) {
+      ySettings = boxplotYAxis[this.satisfactionId]
+    } else ySettings = boxplotYAxis[this.generationsId]
+    if (rowIndex > 1) {
+      xSettings = boxplotXAxis[this.wliId]
+      this.createWliBoxplot(rowIndex, this.bpItems[rowIndex], xSettings, ySettings, this.bpFactories[rowIndex])
+    } else {
+      xSettings = boxplotXAxis[this.tokensId]
+      this.createTokensBoxplot(rowIndex, this.bpItems[rowIndex], xSettings, ySettings, this.bpFactories[rowIndex])
+    }
+
   }
 
-  countOccurrencies(data: LogItem[], value: string) {
+  createSingleScatterplot(
+    rowIndex: number,
+    columnIndex: number,
+    data: LogItem[], 
+    xSettings: XAxisScatterplot,
+    ySettings: YAxisScatterplot,
+    factory: GraphFactory,
+    maxRay: number,
+    legend: boolean
+  ) {
+    factory.createXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
+    factory.createYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
+    factory.addXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
+    factory.addYAxis(ySettings.type, ySettings.domain, ySettings.ticks, "s")
+    factory.addRAxis([1, maxRay], xSettings.maxRay)
+    //factory.addColoredBackground()
+    factory.colorGrid()
+    factory.addXAxisTitle(xSettings.value)
+    factory.addYAxisTitle(ySettings.value)
+    factory.addVariableScatterplotDots(data, xSettings.value, ySettings.value)
+    if (legend) factory.addScatterplotDimensionLegend()
+  }
+
+  createSingleScatterplotSelectionMode(
+    rowIndex: number,
+    columnIndex: number,
+    data: LogItem[], 
+    xSettings: XAxisScatterplot,
+    ySettings: YAxisScatterplot,
+    factory: GraphFactory,
+  ) {
+    factory.createXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
+    factory.createYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
+    factory.addXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
+    factory.addYAxis(ySettings.type, ySettings.domain, ySettings.ticks, "s")
+    //factory.addColoredBackground()
+    factory.colorGrid()
+    factory.addXAxisTitle(xSettings.value)
+    factory.addYAxisTitle(ySettings.value)
+    factory.addColoredScatterplotDots(data, xSettings.value, ySettings.value)
+  }
+
+  createWliBoxplot(
+    rowIndex: number,
+    data: LogItem[], 
+    xSettings: BoxPlotSettings,
+    ySettings: BoxPlotSettings,
+    factory: GraphFactory,
+  ) {
+    factory.createWliBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
+    factory.createWliBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
+    factory.setBins(xSettings.value, ySettings.value, data, xSettings.ticks)
+    factory.drawBinsVertical(ySettings)
+    factory.addWliBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
+    factory.addWliBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks, ySettings.format)
+    //factory.addColoredBackground()
+    factory.colorGrid()
+    factory.addXAxisTitle(xSettings.value)
+    factory.addYAxisTitle(ySettings.value)
+    factory.svg.on("click", (event: any) => {
+      let elements = event.srcElement.__data__
+      console.log(elements)
+      this.onClickBoxPlot(rowIndex, elements)
+    })
+  }
+
+  createTokensBoxplot(
+    rowIndex: number,
+    data: LogItem[], 
+    xSettings: BoxPlotSettings,
+    ySettings: BoxPlotSettings,
+    factory: GraphFactory,
+  ) {
+    console.log('X', xSettings)
+    console.log('y', ySettings)
+    console.log(data)
+    factory.createTokensBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
+    factory.createTokensBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
+    factory.setBins(ySettings.value, xSettings.value, data, ySettings.ticks)
+    factory.drawBinsHorizontal(ySettings)
+    factory.addTokensBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
+    factory.addTokensBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks, ySettings.format)
+    //factory.addColoredBackground()
+    factory.colorGrid()
+    factory.addXAxisTitle(xSettings.value)
+    factory.addYAxisTitle(ySettings.value)
+    factory.svg.on("click", (event: any) => {
+      let elements = event.srcElement.__data__
+      console.log(event)
+      this.onClickBoxPlot(rowIndex, elements)
+    })
+  }
+
+  onClickBoxPlot(rowIndex: number, selectedItems: any[]) {
+    if (!this.selectionModeArray[rowIndex]) {
+      this.selectionModeArray[rowIndex] = true
+      this.selectionModeBsArray[rowIndex].next(true)
+    }
+    this.rowItems[rowIndex] = [...this.itemsArray]
+    for(const sel of selectedItems) {
+      let el: LogItem = this.rowItems[rowIndex].find((elem: any) => elem._time === sel._time) || {} as LogItem
+      let index = this.rowItems[rowIndex].indexOf(el)
+      this.rowItems[rowIndex][index].selected = true
+    }
+    this.cleanScatterplotsRow(rowIndex)
+    this.refreshScatterplotsRow(rowIndex)
+  }
+
+  cleanBoxPlot(rowIndex: number) {
+    this.bpFactories[rowIndex].removeSvg('bpr' + rowIndex)
+  }
+
+  cleanScatterplotsRow(rowIndex: number) {
+    for(let i = 0; i < 5; i ++) {
+      let id = 'spr' + rowIndex + 'c' + i
+      this.spFactories[rowIndex][i].removeSvg(id)
+    }
+  }
+
+  initializeSVGs() {
+    //initialize scatterplots
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < models.length; col++) {
+        let id_sp = 'spr' + row + 'c' + col
+        this.spFactories[row][col].createSvg(id_sp)
+      }
+      let id_bp = 'bpr' + row
+      this.bpFactories[row].createSvg(id_bp)
+    }
+  }
+
+
+  countOccurrencies(data: LogItem[], xValue: string, yValue: string) {
     let resArray = []
     for (let i = 0; i < data.length; i++) {
         let resIndex = undefined
         for (let j = 0; j < resArray.length; j++) {
-            if (data[i][this.mainVariable as keyof LogItem] === resArray[j][this.mainVariable as keyof LogItem] 
-            && data[i][value as keyof LogItem] === resArray[j][value as keyof LogItem]) {
+            if (data[i][xValue as keyof LogItem] === resArray[j][xValue as keyof LogItem] 
+            && data[i][yValue as keyof LogItem] === resArray[j][yValue as keyof LogItem]) {
                 resIndex = j
             }
         }
@@ -106,5 +291,35 @@ export class GensatComponent {
     }
     return resArray
     //return resArray.slice(1, resArray.length)
+  }
+
+  onClickGraphContainer(rowIndex: number, modelIndex: number) {
+    if (!this.selectionModeArray[rowIndex]) {
+      this.currentModels[rowIndex] = this.models[modelIndex]
+      this.bsArray[rowIndex].next(this.models[modelIndex])
+  
+      this.bpItems[rowIndex] = this.rowItems[rowIndex].filter(obj => obj.model === models[modelIndex])
+  
+      this.cleanBoxPlot(rowIndex)
+      this.refreshBoxPlot(rowIndex)
+    }
+  }
+
+  onClickModelName(modelIndex: number) {
+    for(let i = 0; i < 4; i++) {
+      this.onClickGraphContainer(i, modelIndex)
+    }
+  }
+
+  disableSelectionMode(rowIndex: number) {
+    this.selectionModeArray[rowIndex] = false
+    this.selectionModeBsArray[rowIndex].next(false)
+    this.rowItems[rowIndex] = [...this.itemsArray]
+
+    this.cleanScatterplotsRow(rowIndex)
+    this.refreshScatterplotsRow(rowIndex)
+
+    this.cleanBoxPlot(rowIndex)
+    this.refreshBoxPlot(rowIndex)
   }
 }

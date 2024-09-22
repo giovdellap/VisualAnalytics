@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 export function createAxis(type: string, domain: any[], range: number[]) {
-  if (type === 'linear') {
+  if (type === 'linear' || type === 'boxplot') {
     return d3.scaleLinear()
     .domain(domain)
     .range(range);

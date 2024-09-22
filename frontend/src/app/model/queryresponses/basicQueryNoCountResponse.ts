@@ -4,6 +4,8 @@ export class BasicQueryNoCountResponseItem {
   wli: number = 0
   tokens: number = 0
   model: string = ""
+  count: number = 0
+  selected: boolean = false
 }
 
 

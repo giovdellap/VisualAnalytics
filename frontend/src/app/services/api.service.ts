@@ -128,13 +128,13 @@ export class ApiService {
     )
   }
 
-  getGenericLogQuery(field: string): Observable<LogItem[]> {
+  getGenericLogQuery(): Observable<LogItem[]> {
     let body = {
       db: this.db,
-      field: field
+      //field: field
     }
     return this.getLogObservable(
-      this.http.post<LogItemGenerations[]>(this.url + "/query/logQuery", body)
+      this.http.post<BasicQueryNoCountResponseItem[]>(this.url + "/query/logQuery", body)
     )
   }
 
