@@ -15,14 +15,22 @@
   width: 10%;
 }
 
+.card {
+  background-color: #03346E;
+  color: #e3e364;
+}
+
 .title-container {
   font-size: 1.5em;
   font-weight: bold;
   width: 100%;
   text-align: center;
+  color: #E2DFD0;
 }
 
-.card-container {
+.container {
+  background-color: #021526;
+  height: 98%;
 }
 
 .bottom-container {

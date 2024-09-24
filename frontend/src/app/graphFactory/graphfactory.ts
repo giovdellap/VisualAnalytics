@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import { BoxPlotSettings } from '../model/graphSettings/boxplotSettings';
 import { models } from '../model/models';
 import { LogItem } from '../model/queryresponses/analModel/logItem';
+import { lightYellow, medGrey, medYellow, plotBg, white } from '../utils/colors';
 import { createAxis, getScatterplotLegendPosition, getSelectedColor } from './graphUtils';
 
 export class GraphFactory {
@@ -38,8 +39,6 @@ export class GraphFactory {
     //.attr("transform", "translate(" + this.margin + "," + this.margin + ")")
     .attr("transform", "translate(" + this.margin + "," + this.margin/2 + ")");
     //.attr("transform", "translate(" + this.margin +",)");
-
-
   }
 
   public createXAxis(type: string, domain: number[] | Date[], ticks: number, format: string) {
@@ -53,11 +52,13 @@ export class GraphFactory {
   public addXAxis(type: string, domain: number[] | Date[], ticks: number, format: string) {
       this.svg.append("g")
       .attr("transform", "translate(0," + this.height + ")")
+      .style("stroke", white)
       .call(d3.axisBottom(this.x)
         .tickSize(-this.height)
         .ticks(ticks, format)
-      );
-
+      )
+      .select(".domain")
+      .style("stroke",white);
   }
 
   public createYAxis(type: string, domain: number[], ticks: number) {
@@ -70,15 +71,18 @@ export class GraphFactory {
 
   public addYAxis(type: string, domain: number[], ticks: number, format: string) {
     this.svg.append("g")
+    .style("stroke", white)
     .call(d3.axisLeft(this.y)
       .tickSize(-this.width)
       .ticks(ticks, format)
-    );
+    )
+    .select(".domain")
+    .style("stroke",white);
   }
 
   public colorGrid() {
     this.svg.selectAll(".tick line")
-    .attr("stroke","#C7C7C7");
+    .attr("stroke",medGrey);
   }
 
   public addXAxisTitle(value: string) {
@@ -87,6 +91,7 @@ export class GraphFactory {
     .attr("x", this.width)
     .attr("y", this.height + (this.margin / 2))
     .style("font", "10px sans-serif")
+    .attr("fill", "#EEEEEE")
     .text(value);
   }
 
@@ -97,6 +102,7 @@ export class GraphFactory {
     .attr("y", - (this.margin/2) )
     .attr("x", 0)
     .style("font", "10px sans-serif")
+    .attr("fill", "#EEEEEE")
     .text(value)
   }
 
@@ -122,7 +128,7 @@ export class GraphFactory {
     .attr("y",0)
     .attr("height", this.height)
     .attr("width", this.width)
-    .style("fill", "#9cb8f0")
+    .style("fill", plotBg)
   }
 
   public addRAxis(domain: number[], maxRay: number) {
@@ -143,7 +149,7 @@ export class GraphFactory {
     .attr("cy",  (d: any) => this.y(d[y_value]))
     .attr("r", (d: any) => this.r(d.count))
     .style("opacity", 1)
-    .style("fill", "#69b3a2")
+    .style("fill", medYellow)
   }
 
   public addSimpleScatterplotDots(
@@ -161,14 +167,14 @@ export class GraphFactory {
     .attr("cy",  (d: any) => this.y(d[y_value]))
     .attr("r", ray)
     .style("opacity", 1)
-    .style("fill", "#69b3a2")
+    .style("fill", medYellow)
   }
 
   public addScatterplotDimensionLegend() {
     const positionString = "translate(" + (this.width + this.margin/4) + "," + (this.height) + ")"
 
     const legend = this.svg.append("g")
-      .attr("fill", "#777")
+      .attr("fill", "#EEEEEE")
       .attr("transform", positionString)
       .attr("text-anchor", "middle")
       .style("font", "6px sans-serif")
@@ -178,7 +184,7 @@ export class GraphFactory {
 
     legend.append("circle")
       .attr("fill", "none")
-      .attr("stroke", "#ccc")
+      .attr("stroke", "#EEEEEE")
       .attr("cy", (d: any) => - getScatterplotLegendPosition(this.r, 20, 4, d))
       .attr("r", this.r);
 
@@ -236,7 +242,7 @@ export class GraphFactory {
 
     //horizontal top
     g.append("path")
-      .attr("stroke", "currentColor")
+      .attr("stroke", medYellow)
       .attr("stroke-width", 2)
       .attr("d", (d: any) => `
         M${this.x(d.x0 - 0.2)},${this.y((d.range[1]))}
@@ -245,7 +251,7 @@ export class GraphFactory {
 
     //horizontal bottom
     g.append("path")
-      .attr("stroke", "currentColor")
+      .attr("stroke", medYellow)
       .attr("stroke-width", 2)
       .attr("d", (d: any) => `
         M${this.x(d.x0 - 0.2)},${this.y((d.range[0]))}
@@ -254,7 +260,7 @@ export class GraphFactory {
 
     // Range.
     g.append("path")
-        .attr("stroke", "currentColor")
+        .attr("stroke", medYellow)
         .attr("stroke-width", 2)
         .attr("d", (d: any) => `
           M${this.x(d.x0)},${this.y(d.range[1])}
@@ -276,7 +282,7 @@ export class GraphFactory {
     // Quartile 1.
     g.append("path")
         .attr("id", "1")
-        .attr("fill", "#ddd")
+        .attr("fill", lightYellow)
         .attr("d", (d: any) => `
           M${this.x(d.x0-0.2)},${this.y(d.quartiles[1])}
           H${this.x(d.x0+0.2)}
@@ -288,7 +294,7 @@ export class GraphFactory {
     // Quartile 2.
     g.append("path")
         .attr("id", "2")
-        .attr("fill", "#ddd")
+        .attr("fill", lightYellow)
         .attr("d", (d: any) => `
           M${this.x(d.x0-0.2)},${this.y(d.quartiles[1])}
           H${this.x(d.x0+0.2)}
@@ -311,7 +317,7 @@ export class GraphFactory {
   
     // Median.
     g.append("path")
-        .attr("stroke", "currentColor")
+        .attr("stroke", medYellow)
         .attr("stroke-width", 2)
         .attr("d", (d: any) => `
           M${this.x(d.x0-0.2)},${this.y(d.quartiles[1])}
@@ -320,7 +326,7 @@ export class GraphFactory {
   
     // Outliers, with a bit of jitter.
     g.append("g")
-        .attr("fill", "currentColor")
+        .attr("fill", medYellow)
         .attr("fill-opacity", 0.2)
         .attr("stroke", "none")
         .attr("transform", (d: any) => `translate(${this.x(d.x0)},0)`)
@@ -343,8 +349,8 @@ export class GraphFactory {
 
     //vertical left
     g.append("path")
-      .attr("stroke", "currentColor")
-      .attr("stroke-width", 2)
+      .attr("stroke", medYellow)
+      .attr("stroke-width", 3)
       .attr("d", (d: any) => `
         M${this.x(d.range[0])},${this.y((d.x0 - 0.2))}
         V${this.y((d.x0 + 0.2))}
@@ -352,8 +358,8 @@ export class GraphFactory {
 
     //vertical right
     g.append("path")
-      .attr("stroke", "currentColor")
-      .attr("stroke-width", 2)
+      .attr("stroke", medYellow)
+      .attr("stroke-width", 3)
       .attr("d", (d: any) => `
         M${this.x(d.range[1])},${this.y((d.x0 - 0.2))}
         V${this.y(d.x0 + 0.2)}
@@ -361,8 +367,8 @@ export class GraphFactory {
 
     //range
     g.append("path")
-    .attr("stroke", "currentColor")
-    .attr("stroke-width", 2)
+    .attr("stroke", medYellow)
+    .attr("stroke-width", 3)
     .attr("d", (d: any) => `
       M${this.x(d.range[0])},${this.y((d.x0))}
       H${this.x(d.range[1])}
@@ -382,7 +388,7 @@ export class GraphFactory {
 
     // Quartile 1
     g.append("path")
-      .attr("fill", "#ddd")
+      .attr("fill", lightYellow)
       .attr("id", "1")
       .attr("d", (d: any) => `
         M${this.x(d.quartiles[0])}, ${this.y(d.x0 - 0.3)}
@@ -394,7 +400,7 @@ export class GraphFactory {
 
     // Quartile 2
     g.append("path")
-      .attr("fill", "#ddd")
+      .attr("fill", lightYellow)
       .attr("id", "2")
       .attr("d", (d: any) => `
         M${this.x(d.quartiles[1])}, ${this.y(d.x0 - 0.3)}
@@ -418,8 +424,8 @@ export class GraphFactory {
     
     // Median.
     g.append("path")
-        .attr("stroke", "currentColor")
-        .attr("stroke-width", 2)
+        .attr("stroke", medYellow)
+        .attr("stroke-width", 3)
         .attr("d", (d: any) => `
           M${this.x(d.quartiles[1])},${this.y(d.x0 - 0.3)}
           V${this.y(d.x0 + 0.3)}
@@ -427,7 +433,7 @@ export class GraphFactory {
   
     // Outliers, with a bit of jitter.
     g.append("g")
-        .attr("fill", "currentColor")
+        .attr("fill", medYellow)
         .attr("fill-opacity", 0.2)
         .attr("stroke", "none")
         .attr("transform", (d: any) => `translate(${this.y((d.x0 + d.x1) / 2)},0)`)
@@ -448,10 +454,13 @@ export class GraphFactory {
   public addTokensBPXAxis(type: string, domain: number[] | Date[], ticks: number, format: string) {
       this.svg.append("g")
       .attr("transform", "translate(0," + this.height + ")")
+      .style("stroke", white)
       .call(d3.axisBottom(this.x)
         .tickSize(-this.height)
         .ticks(ticks, format)
-      );
+      )
+      .select(".domain")
+      .style("stroke",white);
   }
 
   public createTokensBPYAxis(type: string, domain: number[], ticks: number) {
@@ -462,10 +471,13 @@ export class GraphFactory {
 
   public addTokensBPYAxis(type: string, domain: number[], ticks: number, format: string) {
     this.svg.append("g")
+    .style("stroke", white)
     .call(d3.axisLeft(this.y)
       .tickSize(-this.width)
       .ticks(ticks, format)
-    );
+    )
+    .select(".domain")
+    .style("stroke",white);
   }
 
   public createWliBPXAxis(type: string, domain: number[] | Date[], ticks: number, format: string) {
@@ -477,10 +489,13 @@ export class GraphFactory {
   public addWliBPXAxis(type: string, domain: number[] | Date[], ticks: number, format: string) {
     this.svg.append("g")
     .attr("transform", "translate(0," + this.height + ")")
+    .style("stroke", white)
     .call(d3.axisBottom(this.x)
       .tickSize(-this.height)
       .ticks(ticks, format)
-    );
+    )
+    .select(".domain")
+    .style("stroke",white);
   }
 
   public createWliBPYAxis(type: string, domain: number[], ticks: number) {
@@ -491,9 +506,13 @@ export class GraphFactory {
 
   public addWliBPYAxis(type: string, domain: number[], ticks: number, format: string) {
     this.svg.append("g")
+    .style("stroke",white)
     .call(d3.axisLeft(this.y)
       .tickSize(-this.width)
       .ticks(ticks, format)
-    );
+    )
+    .select(".domain")
+    .style("stroke",white)
+    ;
   }
 }

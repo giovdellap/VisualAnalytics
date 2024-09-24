@@ -46,7 +46,7 @@ export class LoadtimeComponent {
 
   optionControl = new FormControl()
   countOption = "stream_messages"
-  options: string[] = ['input_tokens', 'total_tokens', 'stream_messages', 'input_dimension']
+  options: string[] = ['total_tokens', 'input_tokens', 'stream_messages', 'input_dimension']
 
   insights: string[] = requestScatterplotInsights
   insightEmitter = new BehaviorSubject<string>(this.insights[0])
@@ -103,6 +103,7 @@ export class LoadtimeComponent {
     let minDate = new Date(2024, 8, 8, 0, 0, 0)
     let maxDate = new Date(2024, 8, 14, 23, 59, 59)
 
+    this.topFactory.addColoredBackground()
     this.topFactory.createXAxis('time', [minDate, maxDate], 28, "%a %H")
     this.topFactory.createYAxis('linear', [0, 130], 10)
     this.topFactory.addXAxis('time', [minDate, maxDate], 28, "%a %H")
@@ -115,6 +116,7 @@ export class LoadtimeComponent {
 
   createSimpleScatterplot() {
     let xOption = this.getXOption(this.optionControl.value)
+    this.bottomFactory.addColoredBackground()
     this.bottomFactory.createXAxis(xOption.type, xOption.domain, xOption.ticks, "s")
     this.bottomFactory.addXAxis(xOption.type, xOption.domain, xOption.ticks, "s")
     this.bottomFactory.createYAxis('linear', [0, 130], 10)
@@ -151,6 +153,7 @@ export class LoadtimeComponent {
 
     let countedData: RequestItem[] = this.countOccurrencies(values, this.optionControl.value, 'loading_time')
 
+    factory.addColoredBackground()
     factory.createXAxis(xOption.type, xOption.domain, xOption.ticks, "s")
     factory.addXAxis(xOption.type, xOption.domain, xOption.ticks, "s")
     factory.createYAxis('linear', yDomain, yTicks)

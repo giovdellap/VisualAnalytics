@@ -1,0 +1,13 @@
+export const bgColor = "#021526"
+export const lightBlue = "#6EACDA"
+export const medBlue = "#03346E"
+export const lightGrey = "#E2DFD0"
+export const medGrey = "#d1cec0"
+export const medYellow = "#e0e036"
+export const lightYellow = "#e3e364"
+export const white = "#EEEEEE"
+export const plotBg = "#010b14"
+
+export const selectedRed = "#e64343"
+export const selectedBlue = "#4135e8"
+export const selectedGreeen = "#66e339"

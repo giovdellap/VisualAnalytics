@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import { LogItem } from '../model/queryresponses/analModel/logItem';
 import { RequestItem } from '../model/queryresponses/analModel/requestItems';
 import { BasicRequestQueryItem } from '../model/queryresponses/basicRequestQueryItem';
+import { medYellow, selectedBlue, selectedGreeen, selectedRed } from '../utils/colors';
 
 export function createAxis(type: string, domain: any[], range: number[]) {
   if (type === 'linear' || type === 'boxplot') {
@@ -101,13 +102,13 @@ export function getElements(
 export function getSelectedColor(colorId: number): string {
   switch (colorId) {
     case 0:
-      return "#69b3a2"
+      return medYellow
     case 1:
-      return "#fa2a2a"
+      return selectedRed
     case 2:
-      return "#382afa"
+      return selectedBlue
     case 3:
-      return "#f2d335"
+      return selectedGreeen
   }
   return ""
 }

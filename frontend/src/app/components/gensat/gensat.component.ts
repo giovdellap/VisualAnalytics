@@ -151,12 +151,12 @@ export class GensatComponent {
     maxRay: number,
     legend: boolean
   ) {
+    factory.addColoredBackground()
     factory.createXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.createYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
     factory.addXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.addYAxis(ySettings.type, ySettings.domain, ySettings.ticks, "s")
     factory.addRAxis([1, maxRay], xSettings.maxRay)
-    //factory.addColoredBackground()
     factory.colorGrid()
     factory.addXAxisTitle(xSettings.value)
     factory.addYAxisTitle(ySettings.value)
@@ -172,11 +172,11 @@ export class GensatComponent {
     ySettings: YAxisScatterplot,
     factory: GraphFactory,
   ) {
+    factory.addColoredBackground()
     factory.createXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.createYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
     factory.addXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.addYAxis(ySettings.type, ySettings.domain, ySettings.ticks, "s")
-    //factory.addColoredBackground()
     factory.colorGrid()
     factory.addXAxisTitle(xSettings.value)
     factory.addYAxisTitle(ySettings.value)
@@ -190,13 +190,13 @@ export class GensatComponent {
     ySettings: BoxPlotSettings,
     factory: GraphFactory,
   ) {
+    factory.addColoredBackground()
     factory.createWliBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.createWliBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
     factory.setBins(xSettings.value, ySettings.value, data, xSettings.ticks)
     factory.drawBinsVertical(ySettings)
     factory.addWliBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.addWliBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks, ySettings.format)
-    //factory.addColoredBackground()
     factory.colorGrid()
     factory.addXAxisTitle(xSettings.value)
     factory.addYAxisTitle(ySettings.value)
@@ -232,13 +232,13 @@ export class GensatComponent {
     ySettings: BoxPlotSettings,
     factory: GraphFactory,
   ) {
+    factory.addColoredBackground()
     factory.createTokensBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.createTokensBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
     factory.setBins(ySettings.value, xSettings.value, data, ySettings.ticks)
     factory.drawBinsHorizontal(ySettings)
     factory.addTokensBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.addTokensBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks, ySettings.format)
-    //factory.addColoredBackground()
     factory.colorGrid()
     factory.addXAxisTitle(xSettings.value)
     factory.addYAxisTitle(ySettings.value)
