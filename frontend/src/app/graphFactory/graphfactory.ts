@@ -48,7 +48,7 @@ export class GraphFactory {
       .rangeRound([(this.margin), (this.width - (this.margin / 2))])
     } else this.x = createAxis(type, domain, [0, this.width])
   }
-  
+
   public addXAxis(type: string, domain: number[] | Date[], ticks: number, format: string) {
       this.svg.append("g")
       .attr("transform", "translate(0," + this.height + ")")
@@ -149,7 +149,7 @@ export class GraphFactory {
     .attr("cy",  (d: any) => this.y(d[y_value]))
     .attr("r", (d: any) => this.r(d.count))
     .style("opacity", 1)
-    .style("fill", medYellow)
+    .style("fill", (d:any) => getSelectedColor(d.selected));
   }
 
   public addSimpleScatterplotDots(
@@ -237,7 +237,7 @@ export class GraphFactory {
       .selectAll("g")
       .data(this.bins)
       .join("g");
-  
+
     //NOT CLICKABLE
 
     //horizontal top
@@ -266,7 +266,7 @@ export class GraphFactory {
           M${this.x(d.x0)},${this.y(d.range[1])}
           V${this.y(d.range[0])}
         `);
-  
+
     // Quartile 0.
     g.append("path")
         .attr("id", "0")
@@ -314,7 +314,7 @@ export class GraphFactory {
           H${this.x(d.x0 -0.2)}
           Z
         `);
-  
+
     // Median.
     g.append("path")
         .attr("stroke", medYellow)
@@ -323,7 +323,7 @@ export class GraphFactory {
           M${this.x(d.x0-0.2)},${this.y(d.quartiles[1])}
           H${this.x(d.x0+0.2)}
         `);
-  
+
     // Outliers, with a bit of jitter.
     g.append("g")
         .attr("fill", medYellow)
@@ -337,7 +337,7 @@ export class GraphFactory {
         .attr("cx", () => (Math.random() - 0.5) * 4)
         .attr("cy", (d: any) => this.y(d[ordValue.value]));
   }
-  
+
   public drawBinsHorizontal(ordValue: BoxPlotSettings) {
 
     const g = this.svg.append("g")
@@ -373,7 +373,7 @@ export class GraphFactory {
       M${this.x(d.range[0])},${this.y((d.x0))}
       H${this.x(d.range[1])}
     `);
-  
+
     // Quartile 0
     g.append("path")
         .attr("id", "0")
@@ -421,7 +421,7 @@ export class GraphFactory {
         V${this.y(d.x0 - 0.3)}
         Z
       `);
-    
+
     // Median.
     g.append("path")
         .attr("stroke", medYellow)
@@ -430,7 +430,7 @@ export class GraphFactory {
           M${this.x(d.quartiles[1])},${this.y(d.x0 - 0.3)}
           V${this.y(d.x0 + 0.3)}
         `);
-  
+
     // Outliers, with a bit of jitter.
     g.append("g")
         .attr("fill", medYellow)
@@ -450,7 +450,7 @@ export class GraphFactory {
     .domain(domain)
     .rangeRound([0, this.width])
   }
-  
+
   public addTokensBPXAxis(type: string, domain: number[] | Date[], ticks: number, format: string) {
       this.svg.append("g")
       .attr("transform", "translate(0," + this.height + ")")
@@ -485,7 +485,7 @@ export class GraphFactory {
     .domain(domain)
     .rangeRound([0, this.width])
   }
-  
+
   public addWliBPXAxis(type: string, domain: number[] | Date[], ticks: number, format: string) {
     this.svg.append("g")
     .attr("transform", "translate(0," + this.height + ")")
@@ -501,7 +501,7 @@ export class GraphFactory {
   public createWliBPYAxis(type: string, domain: number[], ticks: number) {
     this.y = d3.scaleLinear()
     .domain(domain)
-    .range([this.height, 0])  
+    .range([this.height, 0])
   }
 
   public addWliBPYAxis(type: string, domain: number[], ticks: number, format: string) {

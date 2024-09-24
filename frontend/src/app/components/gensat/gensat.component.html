@@ -6,15 +6,15 @@
         <div class="title-container" (click)="onClickModelName(3)">{{models[3]}}</div>
         <div class="title-container" (click)="onClickModelName(4)">{{models[4]}}</div>
     </div>
-    <div class="main-row">
+    <div class="main-row border-top border-bottom">
         <div class="scatterplots-container">
-            <div  
+            <div
             [ngClass]="((obsArray[0] | async) === models[0]) ? 'graph-container-selected' : 'graph-container'"
             (click)="onClickGraphContainer(0, 0)"
             >
                 <figure id="spr0c0"></figure>
             </div>
-            <div 
+            <div
             [ngClass]="((obsArray[0] | async) === models[1]) ? 'graph-container-selected' : 'graph-container'"
             (click)="onClickGraphContainer(0, 1)"
             >
@@ -41,17 +41,17 @@
                 <div class="title-boxplot">{{obsArray[0] | async}}</div>
                 <figure id="bpr0"></figure>
             </div>
-            <button mat-fab 
+            <button mat-fab
             class="delete-button"
-            [disabled]="!(selectionModeObsArray[0] | async)" 
-            aria-label="Disable SELECTION MODE" 
+            [disabled]="!(selectionModeObsArray[0] | async)"
+            aria-label="Disable SELECTION MODE"
             (click)="disableSelectionMode(0)">
                 <mat-icon>delete</mat-icon>
-              </button>        
+              </button>
         </div>
 
     </div>
-    <div class="main-row">
+    <div class="main-row border-bottom">
         <div class="scatterplots-container">
             <div [ngClass]="((obsArray[1] | async) === models[0]) ? 'graph-container-selected' : 'graph-container'"
             (click)="onClickGraphContainer(1, 0)"
@@ -84,16 +84,16 @@
                 <div class="title-boxplot">{{obsArray[1] | async}}</div>
                 <figure id="bpr1"></figure>
             </div>
-            <button mat-fab 
+            <button mat-fab
             class="delete-button"
-            [disabled]="!(selectionModeObsArray[1] | async)" 
-            aria-label="Disable SELECTION MODE" 
+            [disabled]="!(selectionModeObsArray[1] | async)"
+            aria-label="Disable SELECTION MODE"
             (click)="disableSelectionMode(1)">
                 <mat-icon>delete</mat-icon>
-              </button>        
+              </button>
         </div>
     </div>
-    <div class="main-row">
+    <div class="main-row border-bottom">
         <div class="scatterplots-container">
             <div [ngClass]="((obsArray[2] | async) === models[0]) ? 'graph-container-selected' : 'graph-container'"
             (click)="onClickGraphContainer(2, 0)"
@@ -126,15 +126,15 @@
                 <div class="title-boxplot">{{obsArray[2] | async}}</div>
                 <figure id="bpr2"></figure>
             </div>
-            <button mat-fab 
+            <button mat-fab
             class="delete-button"
-            [disabled]="!(selectionModeObsArray[2] | async)" 
-            aria-label="Disable SELECTION MODE" 
+            [disabled]="!(selectionModeObsArray[2] | async)"
+            aria-label="Disable SELECTION MODE"
             (click)="disableSelectionMode(2)">
                 <mat-icon>delete</mat-icon>
-              </button>        
+              </button>
         </div>
-    </div> 
+    </div>
     <div class="main-row">
         <div class="scatterplots-container">
             <div [ngClass]="((obsArray[3] | async) === models[0]) ? 'graph-container-selected' : 'graph-container'"
@@ -168,13 +168,13 @@
                 <div class="title-boxplot">{{obsArray[3] | async}}</div>
                 <figure id="bpr3"></figure>
             </div>
-            <button mat-fab 
+            <button mat-fab
             class="delete-button"
-            [disabled]="!(selectionModeObsArray[3] | async)" 
-            aria-label="Disable SELECTION MODE" 
+            [disabled]="!(selectionModeObsArray[3] | async)"
+            aria-label="Disable SELECTION MODE"
             (click)="disableSelectionMode(3)">
                 <mat-icon>delete</mat-icon>
-            </button>        
+            </button>
         </div>
-    </div> 
+    </div>
 </div>

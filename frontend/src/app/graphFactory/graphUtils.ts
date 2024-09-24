@@ -56,43 +56,48 @@ export function getScatterplotLegendPosition(
 }
 
 export function getElements(
-  allItems: LogItem[], 
-  quartiles: number[], 
-  range: number[], 
-  id: number, 
-  ord: string, 
-  card: string, 
+  allItems: LogItem[],
+  quartiles: number[],
+  range: number[],
+  id: number,
+  ord: string,
+  card: string,
   cardV: number,
   colorId: number
 ): LogItem[] {
 
+  console.log('ord', ord)
+  console.log('card', card)
   console.log('cardv', cardV, typeof cardV)
   console.log('id', id, typeof id)
+  console.log('colorid', colorId, typeof colorId)
   let items = [...allItems]
+  console.log('range: ', range)
+  console.log('quartiles', quartiles)
   for (let el of items) {
     const value: number = Number(el[ord as keyof LogItem])
-    const cardValue: number = el[card as keyof LogItem] as number
+    const cardValue: number = Number(el[card as keyof LogItem]) as number
     switch (id) {
       case 0:
-        if (value > range[0] && value < quartiles[0] && cardValue === cardV) {
+        if (value >= range[0] && value <= quartiles[0] && cardValue === cardV) {
             el.selected = colorId
         }
         break;
       case 1:
-        //console.log(value, cardValue, typeof value, typeof cardValue)
-        if (value > quartiles[0] && value < quartiles[1] && cardValue === cardV) {
+        if (value > quartiles[0] && value <= quartiles[1] && cardValue === cardV) {
           el.selected = colorId
-        }        
+        }
         break;
       case 2:
-        if (value > quartiles[1] && value < quartiles[2] && cardValue === cardV) {
+        
+        if (value > quartiles[1] && value <= quartiles[2] && cardValue === cardV) {
           el.selected = colorId
-        }           
+        }
         break;
       case 3:
-        if (value > quartiles[2] && value < range[1] && cardValue === cardV) {
+        if (value > quartiles[2] && value <= range[1] && cardValue === cardV) {
           el.selected = colorId
-        }           
+        }
         break;
     }
   }
@@ -110,13 +115,13 @@ export function getSelectedColor(colorId: number): string {
     case 3:
       return selectedGreeen
   }
-  return ""
+  return medYellow
 }
 
 function getNewDate(old: Date) {
   return new Date(
-    2024, 
-    8, 
+    2024,
+    8,
     8 + old.getDay(),
     old.getHours(),
     old.getMinutes(),

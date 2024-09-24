@@ -23,7 +23,7 @@ export const xScatterplotSettings: XAxisScatterplot[] = [
     value: 'tokens',
     type: 'linear',
     domain: [2000, 10500],
-    maxRay: 5,
+    maxRay: 7,
     insight: 'TOKENS RANGE: 3000-10000',
     ticks: 7,
     format: "s"
@@ -32,7 +32,7 @@ export const xScatterplotSettings: XAxisScatterplot[] = [
     value: 'wli',
     type: 'linear',
     domain: [0, 6],
-    maxRay: 10,
+    maxRay: 15,
     insight: 'WLI RANGE: 1-5',
     ticks: 5,
     format: "g"

@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.optionControl.setValue(this.options[0])
+    this.optionControl.setValue(this.resolution.getResolution())
     this.optionControl.valueChanges.subscribe((res: string) => {
       this.resolution.setResolution(res)
     })

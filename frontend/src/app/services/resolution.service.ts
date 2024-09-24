@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class ResolutionService {
 
-  currentResolution: string = '1920x1080'
   options: string[] = ['1920x1080', '2560x1440']
+  currentResolution: string = this.options[1]
 
   constructor() { }
 
@@ -14,46 +14,50 @@ export class ResolutionService {
     this.currentResolution = res
   }
 
+  getResolution() {
+    return this.currentResolution
+  }
+
   getGenSatScatterplotWidth(): number {
     if (this.currentResolution === this.options[0]) {
       return 250
-    } else return 250
+    } else return 300
   }
 
   getGenSatScatterplotHeight(): number {
     if (this.currentResolution === this.options[0]) {
       return 225
-    } else return 200
+    } else return 312
   }
 
   getGenSatBoxplotWidth(): number {
     if (this.currentResolution === this.options[0]) {
-      return 500
-    } else return 500
+      return 480
+    } else return 670
   }
 
   getGenSatBoxplotHeight(): number {
     if (this.currentResolution === this.options[0]) {
-      return 220
-    } else return 200
+      return 210
+    } else return 290
   }
 
   getWeekScatterPlotWidth(): number {
     if (this.currentResolution === this.options[0]) {
       return 1850
-    } else return 1800
+    } else return 2400
   }
 
   getWeekScatterPlotHeight(): number {
     if (this.currentResolution === this.options[0]) {
       return 450
-    } else return 500
+    } else return 600
   }
 
   getBottomScatterPlotWidth(): number {
     if (this.currentResolution === this.options[0]) {
       return 1650
-    } else return 1800
+    } else return 2100
   }
 
   getBottomScatterPlotHeight(): number {
@@ -65,15 +69,15 @@ export class ResolutionService {
   getPCAWidth(): number {
     if (this.currentResolution === this.options[0]) {
       return 1650
-    } else return 1800
+    } else return 2100
   }
 
   getPCAHeight(): number {
     if (this.currentResolution === this.options[0]) {
       return 160
-    } else return 300
+    } else return 200
   }
 
 
-  
+
 }

@@ -6,21 +6,20 @@
 .button-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 40%;
+  width: 80%;
 }
 
 .button-row {
     display: flex;
     justify-content: space-between;
-    width: 50%;
-    height: 160px;
+    height: 400px;
     align-items: center;
-    font-size: 16px;
+    font-size: 30px;
 }
 
 .button-class {
-  height: 80px;
-  font-size: 16px;
-  width: 50%;
+  height: 350px;
+  font-size: 30px;
 }

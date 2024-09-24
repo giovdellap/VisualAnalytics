@@ -30,7 +30,7 @@ import { NoSanitizePipe } from '../../utils/nosanitizerpipe';
   styleUrl: './gensat.component.css'
 })
 export class GensatComponent {
-  
+
   models: string[] = models
   itemsArray: LogItem[] = []
   rowItems: LogItem[][] = []
@@ -62,7 +62,7 @@ export class GensatComponent {
 
   ngOnInit() {
 
-    //initialize Behaviour Subject and Observable for 
+    //initialize Behaviour Subject and Observable for
     for (let i = 0; i < 4; i++) {
       this.bsArray.push(new BehaviorSubject<string>(this.models[0]))
       this.obsArray.push(this.bsArray[i].asObservable())
@@ -107,22 +107,15 @@ export class GensatComponent {
       yAxis = yScatterplotSettings[this.satisfactionId]
     } else yAxis = yScatterplotSettings[this.generationsId]
 
-    if (this.selectionModeArray[rowIndex] === 0) {
-      let allModelsCounted: LogItem[] = this.countOccurrencies(this.rowItems[rowIndex], xAxis.value, yAxis.value)
-      let maxRay = getMaxCount(allModelsCounted)
-      this.createSingleScatterplot(rowIndex, 0, allModelsCounted, xAxis, yAxis, this.spFactories[rowIndex][0], maxRay, true)
-  
-      for (let i = 1; i < models.length; i++) {
-        let tokensCountedArray = this.countOccurrencies(this.rowItems[rowIndex].filter(obj => obj.model === models[i]), xAxis.value, yAxis.value)
-        this.createSingleScatterplot(rowIndex, i, tokensCountedArray, xAxis, yAxis, this.spFactories[rowIndex][i], maxRay, false)
-      }
-    } else {
-      this.createSingleScatterplotSelectionMode(rowIndex, 0, this.rowItems[rowIndex], xAxis, yAxis, this.spFactories[rowIndex][0])
-      for (let i = 1; i < models.length; i++) {
-        let items: LogItem[] = this.rowItems[rowIndex].filter(obj => obj.model === models[i])
-        this.createSingleScatterplotSelectionMode(rowIndex, i, items, xAxis, yAxis, this.spFactories[rowIndex][i])
-      }
+    let allModelsCounted: LogItem[] = this.countOccurrencies(this.rowItems[rowIndex], xAxis.value, yAxis.value)
+    let maxRay = getMaxCount(allModelsCounted)
+    this.createSingleScatterplot(rowIndex, 0, allModelsCounted, xAxis, yAxis, this.spFactories[rowIndex][0], maxRay, true)
+
+    for (let i = 1; i < models.length; i++) {
+      let tokensCountedArray = this.countOccurrencies(this.rowItems[rowIndex].filter(obj => obj.model === models[i]), xAxis.value, yAxis.value)
+      this.createSingleScatterplot(rowIndex, i, tokensCountedArray, xAxis, yAxis, this.spFactories[rowIndex][i], maxRay, false)
     }
+
   }
 
   refreshBoxPlot(rowIndex: number) {
@@ -144,7 +137,7 @@ export class GensatComponent {
   createSingleScatterplot(
     rowIndex: number,
     columnIndex: number,
-    data: LogItem[], 
+    data: LogItem[],
     xSettings: XAxisScatterplot,
     ySettings: YAxisScatterplot,
     factory: GraphFactory,
@@ -164,28 +157,9 @@ export class GensatComponent {
     if (legend) factory.addScatterplotDimensionLegend()
   }
 
-  createSingleScatterplotSelectionMode(
-    rowIndex: number,
-    columnIndex: number,
-    data: LogItem[], 
-    xSettings: XAxisScatterplot,
-    ySettings: YAxisScatterplot,
-    factory: GraphFactory,
-  ) {
-    factory.addColoredBackground()
-    factory.createXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
-    factory.createYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
-    factory.addXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
-    factory.addYAxis(ySettings.type, ySettings.domain, ySettings.ticks, "s")
-    factory.colorGrid()
-    factory.addXAxisTitle(xSettings.value)
-    factory.addYAxisTitle(ySettings.value)
-    factory.addColoredScatterplotDots(data, xSettings.value, ySettings.value)
-  }
-
   createWliBoxplot(
     rowIndex: number,
-    data: LogItem[], 
+    data: LogItem[],
     xSettings: BoxPlotSettings,
     ySettings: BoxPlotSettings,
     factory: GraphFactory,
@@ -208,15 +182,15 @@ export class GensatComponent {
         } else this.selectionModeArray[rowIndex]++
 
         let colorId = this.selectionModeArray[rowIndex]
-        
+
         let data = event.srcElement.__data__
         console.log(data)
         console.log(event)
         let elements = getElements(
-          this.rowItems[rowIndex], 
-          data.quartiles, data.range, 
-          Number(event.target.id), 
-          xSettings.value, ySettings.value, 
+          this.rowItems[rowIndex],
+          data.quartiles, data.range,
+          Number(event.target.id),
+          ySettings.value, xSettings.value,
           data.x0, colorId)
         d3.select(event.target).attr("fill", getSelectedColor(colorId))
         this.onClickBoxPlot(rowIndex, elements)
@@ -227,7 +201,7 @@ export class GensatComponent {
 
   createTokensBoxplot(
     rowIndex: number,
-    data: LogItem[], 
+    data: LogItem[],
     xSettings: BoxPlotSettings,
     ySettings: BoxPlotSettings,
     factory: GraphFactory,
@@ -243,20 +217,20 @@ export class GensatComponent {
     factory.addXAxisTitle(xSettings.value)
     factory.addYAxisTitle(ySettings.value)
     factory.svg.on("click", (event: any) => {
-      if (this.selectionModeArray[rowIndex] < 4) {
+      if (this.selectionModeArray[rowIndex] < 4 && this.currentModels[rowIndex] === this.models[0]) {
         if (this.selectionModeArray[rowIndex] === 0) {
-          this.selectionModeArray[rowIndex] = 1
           this.selectionModeBsArray[rowIndex].next(true)
-        } else this.selectionModeArray[rowIndex]++
+        }
+        this.selectionModeArray[rowIndex]++
 
         let colorId = this.selectionModeArray[rowIndex]
-        
+
         let data = event.srcElement.__data__
         let elements = getElements(
-          this.rowItems[rowIndex], 
-          data.quartiles, data.range, 
-          Number(event.target.id), 
-          xSettings.value, ySettings.value, 
+          this.rowItems[rowIndex],
+          data.quartiles, data.range,
+          Number(event.target.id),
+          xSettings.value, ySettings.value,
           data.x0, colorId)
         d3.select(event.target).attr("fill", getSelectedColor(colorId))
         this.onClickBoxPlot(rowIndex, elements)
@@ -302,7 +276,7 @@ export class GensatComponent {
     for (let i = 0; i < data.length; i++) {
         let resIndex = undefined
         for (let j = 0; j < resArray.length; j++) {
-            if (data[i][xValue as keyof LogItem] === resArray[j][xValue as keyof LogItem] 
+            if (data[i][xValue as keyof LogItem] === resArray[j][xValue as keyof LogItem]
             && data[i][yValue as keyof LogItem] === resArray[j][yValue as keyof LogItem]) {
                 resIndex = j
             }
@@ -315,6 +289,7 @@ export class GensatComponent {
             resArray.push(obj)
         }
     }
+    //console.log('RESARRAY', resArray)
     return resArray
     //return resArray.slice(1, resArray.length)
   }
@@ -323,11 +298,11 @@ export class GensatComponent {
     if (!this.selectionModeArray[rowIndex]) {
       this.currentModels[rowIndex] = this.models[modelIndex]
       this.bsArray[rowIndex].next(this.models[modelIndex])
-  
+
       if(modelIndex !== 0) {
         this.bpItems[rowIndex] = this.rowItems[rowIndex].filter(obj => obj.model === models[modelIndex])
       } else this.bpItems[rowIndex] = [...this.itemsArray]
-  
+
       this.cleanBoxPlot(rowIndex)
       this.refreshBoxPlot(rowIndex)
     }

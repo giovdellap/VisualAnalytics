@@ -1,17 +1,24 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    background-color: #021526;
+  width: 100vw;
+  background-color: #021526;
 }
 
 .main-row {
     padding: 3px;
-    border-bottom-style: solid;
-    border-width: 3px;
-    border-color: #e8e9eb;
     display: flex;
     align-items: center;
+}
+
+.border-top {
+  border-top-style: solid;
+  border-width: 2px;
+  border-color: #e8e9eb;
+}
+
+.border-bottom {
+  border-bottom-style: solid;
+  border-width: 2px;
+  border-color: #e8e9eb;
 }
 
 .title-row {
@@ -69,6 +76,7 @@
     font-size: 1em;
     font-weight: bold;
     text-align: center;
+    color: #E2DFD0;
 }
 
 figure {
