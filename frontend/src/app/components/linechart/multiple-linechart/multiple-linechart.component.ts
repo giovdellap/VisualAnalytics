@@ -51,7 +51,7 @@ export class MultipleLinechartComponent {
   getGraph(graph_id: number) {
     this.apiService.getBasicQueryNoCOunt(this.xAxis, 'tokens', this.models[graph_id]).subscribe(res => {
       //console.log('GET GRAPH 1')
-      this.svgArray[graph_id] = this.factory.getTokensBoxplot(res, this.xAxis).outerHTML
+      //this.svgArray[graph_id] = this.factory.getTokensBoxplot(res, this.xAxis).outerHTML
       //console.log('GET GRAPH 2')
     })
   }

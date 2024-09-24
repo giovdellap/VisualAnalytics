@@ -11,6 +11,7 @@ queryRouter.post('/test', queryController.test)
 queryRouter.post('/linechartquery', queryController.linechartQuery)
 queryRouter.post('/pcaquery', queryController.pcaRequestQuery)
 queryRouter.post('/logquery', queryController.logQuery)
+queryRouter.post('/requestQuery', queryController.requestQuery)
 
 
 

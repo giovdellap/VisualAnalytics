@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { GensatComponent } from './components/gensat/gensat.component';
 import { LinechartContainerComponent } from './components/linechart-container/linechart-container.component';
 import { LoadingtimePageComponent } from './components/loadingtime-page/loadingtime-page.component';
+import { LoadtimeComponent } from './components/loadtime/loadtime.component';
 import { ScatterplotComponent } from './components/scatterplot/scatterplot.component';
 import { SetupPageComponent } from './components/setup-page/setup-page.component';
 import { MultipleWeekdayComponent } from './components/weekday/multiple-weekday/multiple-weekday.component';
@@ -20,6 +21,7 @@ export const routes: Routes = [
   {path: "weekday/linechart", component: SingleWeekdayComponent},
   {path: "setup", component: SetupPageComponent},
   {path: "gensat", component: GensatComponent},
+  {path: "loadtime", component: LoadtimeComponent}
 
 
 ];

@@ -138,6 +138,16 @@ export class ApiService {
     )
   }
 
+  getGenericResponseQuery(): Observable<BasicRequestQueryItem[]> {
+    let body = {
+      db: this.db,
+      //field: field
+    }
+    return this.getLogObservable(
+      this.http.post<BasicRequestQueryItem[]>(this.url + "/query/requestQuery", body)
+    )
+  }
+
   //INSERTION
 
   initializeDB(db: string) {

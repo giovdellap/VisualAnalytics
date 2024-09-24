@@ -2,17 +2,18 @@ import * as d3 from 'd3';
 import { BoxPlotSettings } from '../model/graphSettings/boxplotSettings';
 import { models } from '../model/models';
 import { LogItem } from '../model/queryresponses/analModel/logItem';
-import { createAxis, getScatterplotLegendPosition } from './graphUtils';
+import { createAxis, getScatterplotLegendPosition, getSelectedColor } from './graphUtils';
 
 export class GraphFactory {
   public svg: any;
   private margin = 30;
-  private width
-  private height
+  public width
+  public height
+  public dots: any
 
   //axis
-  private x: any;
-  private y: any;
+  public x: any;
+  public y: any;
 
   // scatterplot
   private r: any
@@ -21,8 +22,8 @@ export class GraphFactory {
   private bins: any
 
   constructor(width: number, height: number) {
-    this.width = width - (this.margin * 2)
-    this.height = height - (this.margin * 2)
+    this.width = width - (this.margin * 1.5)
+    this.height = height - (this.margin * 1.5)
   }
 
   public removeSvg(id: string): void {
@@ -31,11 +32,13 @@ export class GraphFactory {
   public createSvg(id: string): void {
     this.svg = d3.select("figure#" + id)
     .append("svg")
-    .attr("width", this.width + (this.margin * 2))
-    .attr("height", this.height + (this.margin * 2))
+    .attr("width", this.width + (this.margin * 1.5))
+    .attr("height", this.height + (this.margin * 1.5))
     .append("g")
-    .attr("transform", "translate(" + this.margin + "," + this.margin + ")")
-    //.attr("transform", "translate(" + this.margin/2 + "," + this.margin/2 + ")");
+    //.attr("transform", "translate(" + this.margin + "," + this.margin + ")")
+    .attr("transform", "translate(" + this.margin + "," + this.margin/2 + ")");
+    //.attr("transform", "translate(" + this.margin +",)");
+
 
   }
 
@@ -43,7 +46,7 @@ export class GraphFactory {
     if (type === "boxplot") {
       this.x = d3.scaleLinear()
       .domain(domain)
-      .rangeRound([(this.margin), (this.width - this.margin)])
+      .rangeRound([(this.margin), (this.width - (this.margin / 2))])
     } else this.x = createAxis(type, domain, [0, this.width])
   }
   
@@ -61,7 +64,7 @@ export class GraphFactory {
     if (type === "boxplot") {
       this.y = d3.scaleLinear()
       .domain(domain)
-      .rangeRound([(this.margin), (this.height - this.margin)])
+      .rangeRound([(this.margin), (this.height - (this.margin / 2))])
     } else this.y = createAxis(type, domain, [this.height, 0])
   }
 
@@ -101,8 +104,8 @@ export class GraphFactory {
 
   public addColoredScatterplotDots(data: any, x_value: string, y_value:string) {
 
-    const dots = this.svg.append('g');
-    dots.selectAll("dot")
+    this.dots = this.svg.append('g');
+    this.dots.selectAll("circle")
     .data(data)
     .enter()
     .append("circle")
@@ -110,11 +113,7 @@ export class GraphFactory {
     .attr("cy",  (d: any) => this.y(d[y_value]))
     .attr("r", 1)
     .style("opacity", 1)
-    .style("fill", (d:any) => {
-      if (d.selected) {
-        return "#fa2a23"
-      } else return "#69b3a2"
-    });
+    .style("fill", (d:any) => getSelectedColor(d.selected));
   }
 
   public addColoredBackground() {
@@ -135,8 +134,8 @@ export class GraphFactory {
     x_value: string,
     y_value: string
   ) {
-    const dots = this.svg.append('g');
-    dots.selectAll("dot")
+    this.dots = this.svg.append('g');
+    this.dots.selectAll("circle")
     .data(data)
     .enter()
     .append("circle")
@@ -153,8 +152,8 @@ export class GraphFactory {
     y_value: string,
     ray: number
   ) {
-    const dots = this.svg.append('g');
-    dots.selectAll("dot")
+    this.dots = this.svg.append('g');
+    this.dots.selectAll("circle")
     .data(data)
     .enter()
     .append("circle")
@@ -166,7 +165,7 @@ export class GraphFactory {
   }
 
   public addScatterplotDimensionLegend() {
-    const positionString = "translate(" + (this.width + this.margin/2) + "," + (this.height) + ")"
+    const positionString = "translate(" + (this.width + this.margin/4) + "," + (this.height) + ")"
 
     const legend = this.svg.append("g")
       .attr("fill", "#777")
@@ -224,7 +223,6 @@ export class GraphFactory {
       bin.outliers = bin.filter((v : any) => v[ordValue] < r0 || v[ordValue] > r1); // TODO
       return bin;
     })
-    console.log(ordValue, this.bins)
   }
 
   public drawBinsVertical(ordValue: BoxPlotSettings) {
@@ -234,21 +232,79 @@ export class GraphFactory {
       .data(this.bins)
       .join("g");
   
+    //NOT CLICKABLE
+
+    //horizontal top
+    g.append("path")
+      .attr("stroke", "currentColor")
+      .attr("stroke-width", 2)
+      .attr("d", (d: any) => `
+        M${this.x(d.x0 - 0.2)},${this.y((d.range[1]))}
+        H${this.x((d.x0 + 0.2))}
+      `);
+
+    //horizontal bottom
+    g.append("path")
+      .attr("stroke", "currentColor")
+      .attr("stroke-width", 2)
+      .attr("d", (d: any) => `
+        M${this.x(d.x0 - 0.2)},${this.y((d.range[0]))}
+        H${this.x((d.x0 + 0.2))}
+      `);
+
     // Range.
     g.append("path")
         .attr("stroke", "currentColor")
+        .attr("stroke-width", 2)
         .attr("d", (d: any) => `
           M${this.x(d.x0)},${this.y(d.range[1])}
           V${this.y(d.range[0])}
         `);
   
-    // Quartiles.
+    // Quartile 0.
     g.append("path")
+        .attr("id", "0")
+        .attr("fill", "transparent")
+        .attr("d", (d: any) => `
+          M${this.x(d.x0-0.2)},${this.y(d.range[0])}
+          H${this.x(d.x0+0.2)}
+          V${this.y(d.quartiles[0])}
+          H${this.x(d.x0 -0.2)}
+          Z
+        `);
+
+    // Quartile 1.
+    g.append("path")
+        .attr("id", "1")
         .attr("fill", "#ddd")
+        .attr("d", (d: any) => `
+          M${this.x(d.x0-0.2)},${this.y(d.quartiles[1])}
+          H${this.x(d.x0+0.2)}
+          V${this.y(d.quartiles[0])}
+          H${this.x(d.x0 -0.2)}
+          Z
+        `);
+
+    // Quartile 2.
+    g.append("path")
+        .attr("id", "2")
+        .attr("fill", "#ddd")
+        .attr("d", (d: any) => `
+          M${this.x(d.x0-0.2)},${this.y(d.quartiles[1])}
+          H${this.x(d.x0+0.2)}
+          V${this.y(d.quartiles[2])}
+          H${this.x(d.x0 -0.2)}
+          Z
+        `);
+
+    // Quartile 3.
+    g.append("path")
+        .attr("id", "3")
+        .attr("fill", "transparent")
         .attr("d", (d: any) => `
           M${this.x(d.x0-0.2)},${this.y(d.quartiles[2])}
           H${this.x(d.x0+0.2)}
-          V${this.y(d.quartiles[0])}
+          V${this.y(d.range[1])}
           H${this.x(d.x0 -0.2)}
           Z
         `);
@@ -282,26 +338,84 @@ export class GraphFactory {
       .selectAll("g")
       .data(this.bins)
       .join("g");
-  
-    // Range.
+
+    //NOT CLICKABLE
+
+    //vertical left
     g.append("path")
-        .attr("stroke", "currentColor")
-        .attr("d", (d: any) => `
-          M${this.x(d.range[1])},${this.y((d.x0))}
-          H${this.x(d.range[0])}
-        `);
-  
-    // Quartiles.
+      .attr("stroke", "currentColor")
+      .attr("stroke-width", 2)
+      .attr("d", (d: any) => `
+        M${this.x(d.range[0])},${this.y((d.x0 - 0.2))}
+        V${this.y((d.x0 + 0.2))}
+      `);
+
+    //vertical right
     g.append("path")
-        .attr("fill", "#ddd")
+      .attr("stroke", "currentColor")
+      .attr("stroke-width", 2)
+      .attr("d", (d: any) => `
+        M${this.x(d.range[1])},${this.y((d.x0 - 0.2))}
+        V${this.y(d.x0 + 0.2)}
+      `);
+
+    //range
+    g.append("path")
+    .attr("stroke", "currentColor")
+    .attr("stroke-width", 2)
+    .attr("d", (d: any) => `
+      M${this.x(d.range[0])},${this.y((d.x0))}
+      H${this.x(d.range[1])}
+    `);
+  
+    // Quartile 0
+    g.append("path")
+        .attr("id", "0")
+        .attr("fill", "transparent")
         .attr("d", (d: any) => `
-          M${this.x(d.quartiles[2])}, ${this.y(d.x0 - 0.2)}
+          M${this.x(d.quartiles[0])}, ${this.y(d.x0 - 0.3)}
           V${this.y(d.x0 + 0.3)}
-          H${this.x(d.quartiles[0])}
+          H${this.x(d.range[0])}
           V${this.y(d.x0 - 0.3)}
           Z
         `);
-  
+
+    // Quartile 1
+    g.append("path")
+      .attr("fill", "#ddd")
+      .attr("id", "1")
+      .attr("d", (d: any) => `
+        M${this.x(d.quartiles[0])}, ${this.y(d.x0 - 0.3)}
+        V${this.y(d.x0 + 0.3)}
+        H${this.x(d.quartiles[1])}
+        V${this.y(d.x0 - 0.3)}
+        Z
+      `);
+
+    // Quartile 2
+    g.append("path")
+      .attr("fill", "#ddd")
+      .attr("id", "2")
+      .attr("d", (d: any) => `
+        M${this.x(d.quartiles[1])}, ${this.y(d.x0 - 0.3)}
+        V${this.y(d.x0 + 0.3)}
+        H${this.x(d.quartiles[2])}
+        V${this.y(d.x0 - 0.3)}
+        Z
+      `);
+
+    // Quartile 3
+    g.append("path")
+      .attr("id", "3")
+      .attr("fill", "transparent")
+      .attr("d", (d: any) => `
+        M${this.x(d.range[1])}, ${this.y(d.x0 - 0.3)}
+        V${this.y(d.x0 + 0.3)}
+        H${this.x(d.quartiles[2])}
+        V${this.y(d.x0 - 0.3)}
+        Z
+      `);
+    
     // Median.
     g.append("path")
         .attr("stroke", "currentColor")
@@ -338,7 +452,6 @@ export class GraphFactory {
         .tickSize(-this.height)
         .ticks(ticks, format)
       );
-
   }
 
   public createTokensBPYAxis(type: string, domain: number[], ticks: number) {

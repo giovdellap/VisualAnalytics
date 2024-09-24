@@ -61,7 +61,7 @@ function responseToLogItems(response) {
         obj['model'] = dbObj['model']
         obj['wli'] = dbObj['wli']
         obj['tokens'] = dbObj['tokens']
-        obj.selected = false
+        obj.selected = 0
         temp.push(obj)
     }
     while(temp.length > 0) {
@@ -73,8 +73,24 @@ function responseToLogItems(response) {
     return res
 }
 
+function responseToRequestItems(response) {
+    let temp = []
+    for (const dbObj of response) {
+        let obj = {}
+        obj[dbObj['_field']] = dbObj['_value']
+        obj['time'] = dbObj['_time']
+        obj['input_dimension'] = dbObj['input_dimension']
+        obj['input_tokens'] = dbObj['input_tokens']
+        obj['total_tokens'] = dbObj['total_tokens']
+        obj['stream_messages'] = dbObj['stream_messages']
+        temp.push(obj)
+    }
+    return temp
+}
+
 module.exports = {
     LogItemToPoint,
     RequestToPoint,
-    responseToLogItems
+    responseToLogItems,
+    responseToRequestItems
 }

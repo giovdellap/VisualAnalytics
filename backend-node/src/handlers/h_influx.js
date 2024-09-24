@@ -178,6 +178,14 @@ class InfluxDBHandler extends DBHandler{
     let result = await this.queryRowsObjects(fluxQuery)
     return result
   }
+
+  async requestQuery() {
+    const queryFactory = new InfluxQueryFactory(this.bucket)
+    const fluxQuery = queryFactory.getRequestQuery()
+    console.log('QUERY: ', fluxQuery)
+    let result = await this.queryRowsObjects(fluxQuery)
+    return result
+  }
 }
 
 module.exports = {

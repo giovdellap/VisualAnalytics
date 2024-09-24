@@ -1,6 +1,6 @@
 # TODO
 - Scatterplots gensat
-    - ridurre distanza
-    - on click quartile boxplot
     - on hover punto scatterplot
+-loadtime
 - selettore di risoluzione
+    -risoluzioni 2k

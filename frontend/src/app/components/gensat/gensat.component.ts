@@ -2,15 +2,17 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import * as d3 from 'd3';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GraphFactory } from '../../graphFactory/graphfactory';
-import { getMaxCount } from '../../graphFactory/graphUtils';
+import { getElements, getMaxCount, getSelectedColor } from '../../graphFactory/graphUtils';
 import { BoxPlotSettings, boxplotXAxis, boxplotYAxis } from '../../model/graphSettings/boxplotSettings';
 import { XAxisScatterplot, xScatterplotSettings } from '../../model/graphSettings/xAxisScatterplot';
 import { YAxisScatterplot, yScatterplotSettings } from '../../model/graphSettings/yAxisScatterplot';
 import { models } from '../../model/models';
 import { LogItem } from '../../model/queryresponses/analModel/logItem';
 import { ApiService } from '../../services/api.service';
+import { ResolutionService } from '../../services/resolution.service';
 import { NoSanitizePipe } from '../../utils/nosanitizerpipe';
 
 
@@ -44,7 +46,7 @@ export class GensatComponent {
 
   svgArray: any[] = []
 
-  selectionModeArray: boolean[] = [false, false, false, false]
+  selectionModeArray: number[] = [0, 0, 0, 0]
   selectionModeBsArray: BehaviorSubject<boolean>[] = []
   selectionModeObsArray: Observable<boolean>[] = []
 
@@ -53,7 +55,8 @@ export class GensatComponent {
   currentModels: string[] = []
 
   constructor(
-    private api: ApiService
+    private api: ApiService,
+    private resolution: ResolutionService
   ) {
   }
 
@@ -65,16 +68,16 @@ export class GensatComponent {
       this.obsArray.push(this.bsArray[i].asObservable())
       this.currentModels.push(this.models[0])
 
-      this.selectionModeBsArray.push(new BehaviorSubject<boolean>(this.selectionModeArray[i]))
+      this.selectionModeBsArray.push(new BehaviorSubject<boolean>(this.selectionModeArray[i] !== 0))
       this.selectionModeObsArray.push(this.selectionModeBsArray[i].asObservable())
     }
 
     //create factories
     for (let i = 0; i < 4; i++) {
-      this.bpFactories.push(new GraphFactory(500, 300))
+      this.bpFactories.push(new GraphFactory(this.resolution.getGenSatBoxplotWidth(), this.resolution.getGenSatBoxplotHeight()))
       this.spFactories.push([])
       for (let j = 0; j < this.models.length; j++) {
-        this.spFactories[i].push(new GraphFactory(250, 250))
+        this.spFactories[i].push(new GraphFactory(this.resolution.getGenSatScatterplotWidth(), this.resolution.getGenSatScatterplotHeight()))
       }
     }
 
@@ -104,7 +107,7 @@ export class GensatComponent {
       yAxis = yScatterplotSettings[this.satisfactionId]
     } else yAxis = yScatterplotSettings[this.generationsId]
 
-    if (this.selectionModeArray[rowIndex] === false) {
+    if (this.selectionModeArray[rowIndex] === 0) {
       let allModelsCounted: LogItem[] = this.countOccurrencies(this.rowItems[rowIndex], xAxis.value, yAxis.value)
       let maxRay = getMaxCount(allModelsCounted)
       this.createSingleScatterplot(rowIndex, 0, allModelsCounted, xAxis, yAxis, this.spFactories[rowIndex][0], maxRay, true)
@@ -117,7 +120,6 @@ export class GensatComponent {
       this.createSingleScatterplotSelectionMode(rowIndex, 0, this.rowItems[rowIndex], xAxis, yAxis, this.spFactories[rowIndex][0])
       for (let i = 1; i < models.length; i++) {
         let items: LogItem[] = this.rowItems[rowIndex].filter(obj => obj.model === models[i])
-        console.log('PARTY', items)
         this.createSingleScatterplotSelectionMode(rowIndex, i, items, xAxis, yAxis, this.spFactories[rowIndex][i])
       }
     }
@@ -199,9 +201,27 @@ export class GensatComponent {
     factory.addXAxisTitle(xSettings.value)
     factory.addYAxisTitle(ySettings.value)
     factory.svg.on("click", (event: any) => {
-      let elements = event.srcElement.__data__
-      console.log(elements)
-      this.onClickBoxPlot(rowIndex, elements)
+      if (this.selectionModeArray[rowIndex] < 4) {
+        if (this.selectionModeArray[rowIndex] === 0) {
+          this.selectionModeArray[rowIndex] = 1
+          this.selectionModeBsArray[rowIndex].next(true)
+        } else this.selectionModeArray[rowIndex]++
+
+        let colorId = this.selectionModeArray[rowIndex]
+        
+        let data = event.srcElement.__data__
+        console.log(data)
+        console.log(event)
+        let elements = getElements(
+          this.rowItems[rowIndex], 
+          data.quartiles, data.range, 
+          Number(event.target.id), 
+          xSettings.value, ySettings.value, 
+          data.x0, colorId)
+        d3.select(event.target).attr("fill", getSelectedColor(colorId))
+        this.onClickBoxPlot(rowIndex, elements)
+      }
+
     })
   }
 
@@ -212,9 +232,6 @@ export class GensatComponent {
     ySettings: BoxPlotSettings,
     factory: GraphFactory,
   ) {
-    console.log('X', xSettings)
-    console.log('y', ySettings)
-    console.log(data)
     factory.createTokensBPXAxis(xSettings.type, xSettings.domain, xSettings.ticks, xSettings.format)
     factory.createTokensBPYAxis(ySettings.type, ySettings.domain, ySettings.ticks)
     factory.setBins(ySettings.value, xSettings.value, data, ySettings.ticks)
@@ -226,23 +243,32 @@ export class GensatComponent {
     factory.addXAxisTitle(xSettings.value)
     factory.addYAxisTitle(ySettings.value)
     factory.svg.on("click", (event: any) => {
-      let elements = event.srcElement.__data__
-      console.log(event)
-      this.onClickBoxPlot(rowIndex, elements)
+      if (this.selectionModeArray[rowIndex] < 4) {
+        if (this.selectionModeArray[rowIndex] === 0) {
+          this.selectionModeArray[rowIndex] = 1
+          this.selectionModeBsArray[rowIndex].next(true)
+        } else this.selectionModeArray[rowIndex]++
+
+        let colorId = this.selectionModeArray[rowIndex]
+        
+        let data = event.srcElement.__data__
+        let elements = getElements(
+          this.rowItems[rowIndex], 
+          data.quartiles, data.range, 
+          Number(event.target.id), 
+          xSettings.value, ySettings.value, 
+          data.x0, colorId)
+        d3.select(event.target).attr("fill", getSelectedColor(colorId))
+        this.onClickBoxPlot(rowIndex, elements)
+      }
+
     })
   }
 
-  onClickBoxPlot(rowIndex: number, selectedItems: any[]) {
-    if (!this.selectionModeArray[rowIndex]) {
-      this.selectionModeArray[rowIndex] = true
-      this.selectionModeBsArray[rowIndex].next(true)
-    }
-    this.rowItems[rowIndex] = [...this.itemsArray]
-    for(const sel of selectedItems) {
-      let el: LogItem = this.rowItems[rowIndex].find((elem: any) => elem._time === sel._time) || {} as LogItem
-      let index = this.rowItems[rowIndex].indexOf(el)
-      this.rowItems[rowIndex][index].selected = true
-    }
+  onClickBoxPlot(rowIndex: number, selectedItems: LogItem[]) {
+
+    this.rowItems[rowIndex] = selectedItems
+
     this.cleanScatterplotsRow(rowIndex)
     this.refreshScatterplotsRow(rowIndex)
   }
@@ -298,7 +324,9 @@ export class GensatComponent {
       this.currentModels[rowIndex] = this.models[modelIndex]
       this.bsArray[rowIndex].next(this.models[modelIndex])
   
-      this.bpItems[rowIndex] = this.rowItems[rowIndex].filter(obj => obj.model === models[modelIndex])
+      if(modelIndex !== 0) {
+        this.bpItems[rowIndex] = this.rowItems[rowIndex].filter(obj => obj.model === models[modelIndex])
+      } else this.bpItems[rowIndex] = [...this.itemsArray]
   
       this.cleanBoxPlot(rowIndex)
       this.refreshBoxPlot(rowIndex)
@@ -312,7 +340,7 @@ export class GensatComponent {
   }
 
   disableSelectionMode(rowIndex: number) {
-    this.selectionModeArray[rowIndex] = false
+    this.selectionModeArray[rowIndex] = 0
     this.selectionModeBsArray[rowIndex].next(false)
     this.rowItems[rowIndex] = [...this.itemsArray]
 

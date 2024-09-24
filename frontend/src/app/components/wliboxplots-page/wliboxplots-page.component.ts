@@ -56,7 +56,7 @@ export class WliboxplotsPageComponent implements OnInit {
     this.apiService.getBasicQueryNoCOunt(option, 'wli', model).subscribe(res => {
       //this.factory.createSvg('scatter')
       console.log('GET GRAPH 1')
-      this.svg = this.factory.getWLIBoxplot(res, option).outerHTML
+      //this.svg = this.factory.getWLIBoxplot(res, option).outerHTML
       console.log('GET GRAPH 2')
     })
   }

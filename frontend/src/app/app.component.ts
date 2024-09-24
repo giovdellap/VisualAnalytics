@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ApiService } from './services/api.service';
+import { ResolutionService } from './services/resolution.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +22,7 @@ import { ApiService } from './services/api.service';
     MatInputModule,
     MatSelectModule,
     CommonModule,
-    MatCardModule
+    MatIconModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
@@ -33,37 +33,30 @@ export class AppComponent implements OnInit {
 
   subrowEmitter = new BehaviorSubject<boolean>(false)
   subrowObservable: Observable<boolean>
-  subrowGenEmitter = new BehaviorSubject<boolean>(true)
-  subrowGenObservable: Observable<boolean>
 
-  options = ['influx', 'cassandra']
-  dbControl: FormControl
-  db: string
+  optionControl = new FormControl()
+  options: string[] = ['1920x1080', '2560x1440']
 
   constructor(
-    private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private resolution: ResolutionService
   ) {
-    this.db = this.apiService.getDB()
-    this.dbControl = new FormControl(this.db)
     this.subrowObservable = this.subrowEmitter.asObservable()
-    this.subrowGenObservable = this.subrowGenEmitter.asObservable()
   }
 
   ngOnInit(): void {
-    this.dbControl.valueChanges.subscribe((res: string) => {
-      this.apiService.setDB(res)
+    this.optionControl.setValue(this.options[0])
+    this.optionControl.valueChanges.subscribe((res: string) => {
+      this.resolution.setResolution(res)
     })
   }
 
-  clickButtonRow(gen: boolean) {
+  openSubRow() {
     this.subrowEmitter.next(true)
-    this.subrowGenEmitter.next(gen)
   }
 
   closeSubRow() {
     this.subrowEmitter.next(false)
-    this.subrowGenEmitter.next(false)
   }
 
   onClickPath(path: string) {

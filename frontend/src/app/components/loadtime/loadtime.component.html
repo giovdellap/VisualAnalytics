@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="top-row">
+      <div class="title-container">LOADINGTIME BY WEEKDAY/HOUR</div>
+      <figure id="week"></figure>
+    </div>
+    <div class="title-container">LOADINGTIME - PARAMETER</div>
+    <div class="bottom-row">
+        <div class="filter-row">
+          <div class="card-container">
+            <mat-card class="card"appearance="outlined">
+              <mat-card-content>
+                {{insightObservable | async}}
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <mat-radio-group [formControl]="optionControl" color="primary" labelPosition="after">
+            @for (option of options; track option) {
+              <mat-radio-button [value]="option">{{option}}</mat-radio-button>
+            }
+          </mat-radio-group> 
+        </div>
+        <div class="bottom-container">
+            <div class="bottom-figure">
+                <figure id="left"></figure>
+            </div>
+            <div class="pca-figure">
+                <figure id="right"></figure>
+            </div>
+        </div>
+    </div>
+</div>

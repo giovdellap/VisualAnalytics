@@ -53,6 +53,14 @@ class InfluxQueryFactory {
         ]
         return this.getQuery(filters)
     }
+
+    getRequestQuery() {
+        let filters = [
+            this.getFilterQuery('_measurement', 'request'),
+            //this.getFilterQuery('_field', field),
+        ]
+        return this.getQuery(filters)
+    }
 }
 
 
