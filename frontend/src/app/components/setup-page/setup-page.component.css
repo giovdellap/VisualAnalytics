@@ -13,13 +13,14 @@
 
 .button-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     height: 400px;
     align-items: center;
     font-size: 30px;
+    color: #ffffff;
 }
 
 .button-class {
-  height: 350px;
+  height: 200px;
   font-size: 30px;
 }

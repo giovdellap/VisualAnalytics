@@ -83,6 +83,7 @@ function responseToRequestItems(response) {
         obj['input_tokens'] = dbObj['input_tokens']
         obj['total_tokens'] = dbObj['total_tokens']
         obj['stream_messages'] = dbObj['stream_messages']
+        obj.selected = false
         temp.push(obj)
     }
     return temp

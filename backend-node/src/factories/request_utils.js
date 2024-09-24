@@ -22,8 +22,10 @@ function newRequest(special, date) {
 
     // total tokens increase
     loading_time = loading_time + ((total_tokens - input_tokens)/ 2000)
-    if(classification !== 'LOW') {
+    if(total_tokens > 70000) {
+        loading_time = loading_time + ((total_tokens-70000)/500)
     }
+
     // input dimension increase
     if(input_dimension > 0) {
         let multiplier = 0
@@ -34,6 +36,8 @@ function newRequest(special, date) {
         }
         let add = Math.round((25/8000*input_dimension) * multiplier)
         loading_time = loading_time + add
+        loading_time = loading_time + Math.round(25/8000*input_dimension/4)
+
     }
     return new SpecialRequest(
         input_tokens,

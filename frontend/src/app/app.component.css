@@ -27,18 +27,20 @@
 }
 
 .card-row {
-  width: 40%;
+  width: 50%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-style: solid;
   border-color: #e8e9eb;
-  margin: 20px;
-  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  padding: 10px;
 }
 
 
 .card {
+  margin: 10px;
 }
 
 

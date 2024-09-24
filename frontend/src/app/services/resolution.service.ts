@@ -44,7 +44,7 @@ export class ResolutionService {
 
   getWeekScatterPlotWidth(): number {
     if (this.currentResolution === this.options[0]) {
-      return 1850
+      return 1790
     } else return 2400
   }
 
@@ -56,25 +56,25 @@ export class ResolutionService {
 
   getBottomScatterPlotWidth(): number {
     if (this.currentResolution === this.options[0]) {
-      return 1650
+      return 1590
     } else return 2100
   }
 
   getBottomScatterPlotHeight(): number {
     if (this.currentResolution === this.options[0]) {
-      return 350
+      return 330
     } else return 400
   }
 
   getPCAWidth(): number {
     if (this.currentResolution === this.options[0]) {
-      return 1650
+      return 1590
     } else return 2100
   }
 
   getPCAHeight(): number {
     if (this.currentResolution === this.options[0]) {
-      return 160
+      return 130
     } else return 200
   }
 

@@ -85,11 +85,11 @@ export class GensatComponent {
 
     this.api.getGenericLogQuery().subscribe((res: LogItem[]) => {
       this.itemsArray = res
-      this.rowItems.push(this.itemsArray)
-      this.bpItems.push(this.itemsArray)
+      //this.rowItems.push(this.itemsArray)
+      //this.bpItems.push(this.itemsArray)
       for (let r = 0; r < 4; r++) {
-        this.rowItems.push(this.itemsArray)
-        this.bpItems.push(this.itemsArray)
+        this.rowItems.push([...this.itemsArray])
+        this.bpItems.push([...this.itemsArray])
         this.refreshScatterplotsRow(r)
         this.refreshBoxPlot(r)
       }
@@ -241,10 +241,13 @@ export class GensatComponent {
 
   onClickBoxPlot(rowIndex: number, selectedItems: LogItem[]) {
 
-    this.rowItems[rowIndex] = selectedItems
+    this.rowItems[rowIndex] = [...selectedItems]
 
-    this.cleanScatterplotsRow(rowIndex)
-    this.refreshScatterplotsRow(rowIndex)
+    for(let i = 0; i < 4; i++) {
+      this.cleanScatterplotsRow(rowIndex)
+      this.refreshScatterplotsRow(rowIndex)
+    }
+
   }
 
   cleanBoxPlot(rowIndex: number) {

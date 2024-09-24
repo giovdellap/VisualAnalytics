@@ -3,11 +3,11 @@ import { BoxPlotSettings } from '../model/graphSettings/boxplotSettings';
 import { models } from '../model/models';
 import { LogItem } from '../model/queryresponses/analModel/logItem';
 import { lightYellow, medGrey, medYellow, plotBg, white } from '../utils/colors';
-import { createAxis, getScatterplotLegendPosition, getSelectedColor } from './graphUtils';
+import { createAxis, getLoadTimeColor, getScatterplotLegendPosition, getSelectedColor } from './graphUtils';
 
 export class GraphFactory {
   public svg: any;
-  private margin = 30;
+  public margin = 30;
   public width
   public height
   public dots: any
@@ -119,7 +119,7 @@ export class GraphFactory {
     .attr("cy",  (d: any) => this.y(d[y_value]))
     .attr("r", 1)
     .style("opacity", 1)
-    .style("fill", (d:any) => getSelectedColor(d.selected));
+    .style("fill", (d:any) => getLoadTimeColor(d.selected));
   }
 
   public addColoredBackground() {
@@ -150,6 +150,23 @@ export class GraphFactory {
     .attr("r", (d: any) => this.r(d.count))
     .style("opacity", 1)
     .style("fill", (d:any) => getSelectedColor(d.selected));
+  }
+
+  public addVariableLoadDataScatterplotDots(
+    data: any,
+    x_value: string,
+    y_value: string
+  ) {
+    this.dots = this.svg.append('g');
+    this.dots.selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d: any) => this.x(d[x_value]))
+    .attr("cy",  (d: any) => this.y(d[y_value]))
+    .attr("r", (d: any) => this.r(d.count))
+    .style("opacity", 1)
+    .style("fill", (d:any) => getLoadTimeColor(d.selected));
   }
 
   public addSimpleScatterplotDots(

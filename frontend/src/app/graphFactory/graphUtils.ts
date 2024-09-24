@@ -79,7 +79,7 @@ export function getElements(
     const cardValue: number = Number(el[card as keyof LogItem]) as number
     switch (id) {
       case 0:
-        if (value >= range[0] && value <= quartiles[0] && cardValue === cardV) {
+        if (value >= range[0] && value < quartiles[0] && cardValue === cardV) {
             el.selected = colorId
         }
         break;
@@ -89,7 +89,7 @@ export function getElements(
         }
         break;
       case 2:
-        
+
         if (value > quartiles[1] && value <= quartiles[2] && cardValue === cardV) {
           el.selected = colorId
         }
@@ -116,6 +116,12 @@ export function getSelectedColor(colorId: number): string {
       return selectedGreeen
   }
   return medYellow
+}
+
+export function getLoadTimeColor(selected: boolean): string {
+  if(selected) {
+    return selectedRed
+  } else return medYellow
 }
 
 function getNewDate(old: Date) {

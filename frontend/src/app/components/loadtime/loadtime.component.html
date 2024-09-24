@@ -1,7 +1,7 @@
 <div class="container">
     <div class="top-row">
       <div class="title-container">LOADINGTIME BY WEEKDAY/HOUR</div>
-      <figure id="week"></figure>
+      <figure id="top"></figure>
     </div>
     <div class="title-container">LOADINGTIME - PARAMETER</div>
     <div class="bottom-row">
@@ -17,14 +17,15 @@
             @for (option of options; track option) {
               <mat-radio-button [value]="option">{{option}}</mat-radio-button>
             }
-          </mat-radio-group> 
+          </mat-radio-group>
+          <button mat-raised-button class="button-class" [disabled]="!(selectionObservable | async)" (click)="disableSelection()">DISABLE SELECTION</button>
         </div>
         <div class="bottom-container">
             <div class="bottom-figure">
-                <figure id="left"></figure>
+                <figure id="bottom"></figure>
             </div>
             <div class="pca-figure">
-                <figure id="right"></figure>
+                <figure id="pca"></figure>
             </div>
         </div>
     </div>

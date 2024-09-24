@@ -1,0 +1,11 @@
+.spinner-container{
+  width: 800px;
+  height: 800px;
+  background-color: #ffffff;
+
+}
+
+.spinner{
+  width: 700px;
+  height: 700px;
+}
