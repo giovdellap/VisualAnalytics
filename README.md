@@ -1,5 +1,5 @@
-# VisualAnalytics
-Project for the course of Visual Analytics A.A. 23/24
+# Visual Analytics
+Project for the course of Visual Analytics A.A. 23/24  
 Student: Giovanni Della Pelle
 
 ## To run
